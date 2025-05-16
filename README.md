@@ -1,27 +1,22 @@
 # USEEIO\_CARB\_Runner
 
-This repository provides a complete, California-customized implementation of the U.S. EPA's Environmentally-Extended Input-Output (USEEIO) model.
-It contains a runnable Python script that performs custom matrix decomposition, emissions estimation, and demand scaling using both national and California-specific data.
+This repository provides a California-customized implementation of the U.S. EPA's Environmentally-Extended Input-Output (USEEIO) model. It includes a Python script to perform matrix decomposition, emissions estimation, and demand scaling using both national and California-specific data.
 
----
-
-## 🗌 Overview
+## Overview
 
 This project integrates:
 
-* 📦 **Official EPA models**: `stateior`, `useeior`, `LCIAformatter`
-* 🟡 **CARB modifications**: custom flow data and YAML configuration using `flowsa_BEC`
-* 🧮 A **custom Python script (`run_model.py`)** for computing California-specific emissions and demand matrices at the detailed NAICS level
+* Official EPA models: `stateior`, `useeior`, `LCIAformatter`
+* CARB-specific modifications: custom flow data and YAML configuration using `flowsa_BEC`
+* A custom Python script (`run_model.py`) for computing California-specific emissions and demand matrices at the detailed NAICS level
 
-The model estimates total demand and GHG emissions for:
+The model estimates total demand and greenhouse gas (GHG) emissions for:
 
-* **United States (Detailed)**
-* **California (Summary & Detailed)**
-* **Rest of U.S. (RoUS)**
+* The United States (detailed level)
+* California (summary and detailed levels)
+* Rest of the U.S. (RoUS)
 
----
-
-## 📂 What This Repository Contains
+## Repository Structure
 
 ```
 USEEIO_CARB_Runner/
@@ -34,25 +29,21 @@ USEEIO_CARB_Runner/
     └── bea_model_ca_summary_2022_after_IPCC.yml
 ```
 
----
+## Dependencies and Model Sources
 
-## 🔧 Dependencies & Model Sources
+| Component       | Source                                                        | Description                                            |
+| --------------- | ------------------------------------------------------------- | ------------------------------------------------------ |
+| `useeior`       | [USEPA/useeior](https://github.com/USEPA/useeior)             | Official EEIO model engine implemented in R            |
+| `stateior`      | [USEPA/stateior](https://github.com/USEPA/stateior)           | Builds state-level IO tables                           |
+| `flowsa_BEC`    | [leoal2/flowsa\_BEC](https://github.com/leoal2/flowsa_BEC)    | Modified version of flowsa including CA-specific flows |
+| `LCIAformatter` | [USEPA/LCIAformatter](https://github.com/USEPA/LCIAformatter) | Provides LCIA methods used by the model                |
+| `rpy2`          | [rpy2](https://rpy2.github.io/)                               | Interface between Python and R                         |
 
-| Component       | Source                                                        | Role                                                      |
-| --------------- | ------------------------------------------------------------- | --------------------------------------------------------- |
-| `useeior`       | [USEPA/useeior](https://github.com/USEPA/useeior)             | Official EPA EEIO model engine (R)                        |
-| `stateior`      | [USEPA/stateior](https://github.com/USEPA/stateior)           | Builds state-level IO tables (R)                          |
-| `flowsa_BEC`    | [leoal2/flowsa\_BEC](https://github.com/leoal2/flowsa_BEC)    | **CARB-modified** flowsa version for custom GHG inventory |
-| `LCIAformatter` | [USEPA/LCIAformatter](https://github.com/USEPA/LCIAformatter) | Official LCIA method formatting tool                      |
-| `rpy2`          | [rpy2](https://rpy2.github.io/)                               | Connects Python to R                                      |
+## Prerequisites: Build Supporting Data
 
----
+### Flowsa\_BEC
 
-## 🛠 Prerequisites: Build Supporting Data
-
-Before running `run_model.py`, you must first generate the required environmental and economic data using the following tools:
-
-### Using `flowsa_BEC` (CARB-modified)
+Run the following Python commands to generate CA-specific flow and sector tables:
 
 ```python
 from flowsa.flowbyactivity import getFlowByActivity 
@@ -63,21 +54,21 @@ df_fbs_m1 = getFlowBySector("GHG_state_2022_m1")
 df_fbs_ca = getFlowBySector("GHGc_state_CA_2022")
 ```
 
-This produces a custom satellite table such as:
+This will generate the following required file:
 
 ```
 flowsa/FlowBySector/GHGc_state_CA_2022_v2.0.4.parquet
 ```
 
-### Using `stateior`
+### StateIO
 
-StateIO must be run using a configuration file such as:
+Run `stateior` using a configuration YAML such as:
 
 ```
 C:/Users/USERNAME/AppData/Local/Programs/R/R-4.4.2/library/stateior/extdata/modelspecs/StateIOv1.3-pecan.yml
 ```
 
-This YAML file contains settings like:
+Key parameters of this YAML include:
 
 ```
 Model: "StateIOv1.3-pecan"
@@ -91,74 +82,60 @@ BasePriceType: "PRO"
 DataProduct: ["Make", "Use", "DomesticUse", "ValueAdded", ...]
 ```
 
-This generates Make, Use, and trade-adjusted IO tables by state for each year.
+### LCIAformatter
 
-### Using `LCIAformatter`
-
-No action is needed if you're using the standard EPA files like:
+No changes are required if you use the standard files:
 
 ```
 lciafmt/ipcc/IPCC_v1.1.1_27ba917.parquet
 lciafmt/traci/TRACI_2.1_v1.0.0_5555779.parquet
 ```
 
----
+## USEEIO YAML Specifications
 
-## 🧾 Model YAML Inputs for `useeior`
-
-The USEEIO model is run based on YAML files located in:
+These are YAML files used by `useeior` to build the model, typically located in:
 
 ```
 ~/AppData/Local/Programs/R/R-4.4.2/library/useeior/extdata/modelspecs/
 ```
 
-### Example 1 — California 2022 Summary:
+Examples:
 
-`bea_model_ca_summary_2022_after_IPCC.yml`
+* **California 2022 Summary**: `bea_model_ca_summary_2022_after_IPCC.yml`
 
-* `IODataSource`: `stateior`
-* `ModelRegionAcronyms`: `[US-CA, RoUS]`
-* `SatelliteTable.StaticFile`: `flowsa/FlowBySector/GHGc_state_CA_2022_v2.0.4.parquet`
+  * `IODataSource`: `stateior`
+  * `ModelRegionAcronyms`: `[US-CA, RoUS]`
+  * `SatelliteTable.StaticFile`: `flowsa/FlowBySector/GHGc_state_CA_2022_v2.0.4.parquet`
 
-### Example 2 — USEEIO v2.3 National Detailed:
+* **National Detailed**: `USEEIOv2.3-GHG.yml`
 
-`USEEIOv2.3-GHG.yml`
+  * `IODataSource`: `BEA`
+  * `ModelRegionAcronyms`: `[US]`
+  * `SatelliteTable.StaticFile`: `flowsa/FlowBySector/GHG_national_2019_m2_v2.0.3.parquet`
 
-* `IODataSource`: `BEA`
-* `ModelRegionAcronyms`: `[US]`
-* `SatelliteTable.StaticFile`: `flowsa/FlowBySector/GHG_national_2019_m2_v2.0.3.parquet`
+* **CAEEIO Pecan Configuration**: `CAEEIOv1.3-pecan-22.yml`
 
-### Example 3 — CAEEIO Pecan-style config:
+  * `Alias`: `pecan`
+  * `BaseIOLevel`: `Summary`
+  * `SatelliteTable.StaticFile`: `flowsa/FlowBySector/GHGc_state_CA_2022_v2.0.4_test.parquet`
 
-`CAEEIOv1.3-pecan-22.yml`
+## Installation
 
-* `BaseIOLevel`: `Summary`
-* `Alias`: `pecan`
-* `SatelliteTable.StaticFile`: `flowsa/FlowBySector/GHGc_state_CA_2022_v2.0.4_test.parquet`
-
-These YAMLs drive the configuration and execution of the EEIO model and must be customized correctly before running.
-
----
-
-## ⚙️ Installation
-
-### 1. Clone this repository
+1. Clone this repository:
 
 ```bash
 git clone https://github.com/leoal2/USEEIO_CARB_Runner.git
 cd USEEIO_CARB_Runner
 ```
 
-### 2. Set up the Conda environment
+2. Create and activate the Conda environment:
 
 ```bash
 conda env create -f environment.yml
 conda activate buildings
 ```
 
-### 3. Install required R packages
-
-Open R and run:
+3. Install required R packages:
 
 ```r
 install.packages("devtools")
@@ -168,53 +145,41 @@ devtools::install_github("USEEPA/LCIAformatter")
 devtools::install_github("leoal2/flowsa_BEC")
 ```
 
----
+## Running the Model
 
-## 🚀 Running the Model
-
-After all prerequisites are satisfied and data generated, run:
+Once prerequisites are complete, execute:
 
 ```bash
 python run_model.py
 ```
 
-This will:
+This script will:
 
-* Build national and California EEIO models
-* Load Make/Use, final demand, and matrix data (L, D, A, N, x)
-* Apply CARB-modified satellite data
-* Generate detailed CA matrices and emissions
-* Export results as Excel workbooks
+* Load national and California EEIO models
+* Integrate Make/Use and emissions matrices
+* Apply CARB custom satellite data
+* Output Excel files with detailed GHG results
 
----
+## Outputs
 
-## 📊 Outputs
+Two Excel files are generated:
 
-The script generates two Excel files:
+* `CA_2022_2022USD_...xlsx`: results in 2022 USD
+* `CA_2022_2017USD_...xlsx`: results adjusted to 2017 USD
 
-* `CA_2022_2022USD_...xlsx` — emissions and demand in 2022 USD
-* `CA_2022_2017USD_...xlsx` — CPI-adjusted outputs in 2017 USD
+Contents include:
 
-Each file contains:
+* L, A, D, N matrices
+* Final demand vectors
+* Emissions by sector for US, CA, and RoUS
 
-* Input matrices (L, A)
-* Direct emissions factors (D)
-* Lifecycle emissions factors (N)
-* Demand vectors
-* Sectoral GHG emissions for CA, RoUS, and US
+## Additional Notes
 
----
+* All satellite and indicator parquet files must exist locally or be generated prior to model execution
+* Model region and structure are defined by YAML files under `modelspecs/`
+* `USEEIO.py` handles model setup and dynamic YAML editing as required
 
-## 💡 Notes
+## Contact
 
-* `flowsa_BEC` must be used to generate updated CA-specific GHG parquet files
-* `stateior` should be run with the correct configuration YAML to create `state` IO tables
-* YAML files in `modelspecs/` define what data and regions are loaded
-* `USEEIO.py` handles model orchestration and YAML overrides
-
----
-
-## 📬 Contact
-
-This work is maintained by CARB staff.
-For questions, open an issue or contact [leoal2 on GitHub](https://github.com/leoal2).
+This project is maintained by CARB staff.
+For questions or contributions, please contact [leoal2 on GitHub](https://github.com/leoal2).
