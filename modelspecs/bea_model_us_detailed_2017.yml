@@ -1,0 +1,69 @@
+BaseIOLevel: Detail
+BaseIOSchema: 2017
+BasePriceType: PRO
+BasewithRedefinitions: false
+CommodityorIndustryType: Commodity
+DemandVectors:
+  DefaultDemand: DefaultDemandVectors
+DisaggregationSpecs: null
+ExternalImportFactors: TRUE
+IODataSource: BEA
+IOYear: 2017
+Indicators:
+  GreenhouseGases:
+    Code: GHG
+    DataSources:
+      USEPA_TRACI_2.1:
+        Author: USEPA
+        DataYear: NA
+        Primary: true
+        Title: TRACI 2.1
+        URL: https://www.epa.gov/chemical-research/tool-reduction-and-assessment-chemicals-and-other-environmental-impacts-traci
+    FileLocation: DataCommons
+    Group: Impact Potential
+    Name: Greenhouse Gases
+    ScriptFunctionCall: getImpactMethod
+    ScriptFunctionParameters:
+      indicators:
+      - Global warming
+    SimpleName: Greenhouse Gases
+    SimpleUnit: Kilograms Carbon Dioxide (CO2)
+    StaticFile: lciafmt/traci/TRACI_2.1_v1.0.0_5555779.parquet
+    StaticSource: true
+    Unit: kg CO2 eq
+Model: bea_model_us_detailed_2017
+ModelRegionAcronyms:
+  - US
+ModelType: EEIO
+SatelliteTable:
+  GHG:
+    Abbreviation: GHG
+    DataSources:
+      USEPA_GHG_2022:
+        Author: USEPA
+        DataYear: 2020
+        Primary: true
+        Title: GHG Inventory
+        URL: https://www.epa.gov/ghgemissions/inventory-us-greenhouse-gas-emissions-and-sinks-1990-2020
+    DataYears:
+      - 2017
+    FileLocation: DataCommons
+    FullName: Greenhouse Gases
+    Locations:
+      - US
+    OriginalFlowSource: FEDEFLv1.1.0
+    ScriptFunctionCall: getFlowbySectorCollapsed
+    ScriptFunctionParameters: null
+    SectorListLevel: '6'
+    SectorListSource: NAICS
+    SectorListYear: 2017
+    StaticFile: flowsa/FlowBySector/GHG_national_2017_m2_v2.0.3_1cb504c.parquet
+    StaticSource: true
+ScrapIncluded: false
+
+ImportFactors:
+  StaticFile: "useeior/US_detail_import_factors_exio_2022_17sch.csv"
+  FileLocation: "DataCommons"
+
+
+

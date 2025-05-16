@@ -1,0 +1,72 @@
+Model: bea_model_ca_summary_2022_after
+BaseIOSchema: 2017
+BaseIOLevel: Summary
+IOYear: 2022
+ModelRegionAcronyms: &id001
+  - US-CA
+  - RoUS
+ModelType: EEIO
+IODataSource: stateior
+IODataVersion: 0.4.0
+BasePriceType: PRO
+BasewithRedefinitions: false
+CommodityorIndustryType: Commodity
+ScrapIncluded: false
+DisaggregationSpecs: null
+ExternalImportFactors: TRUE
+
+SatelliteTable:
+  GHG:
+    FullName: "Greenhouse Gases"
+    Abbreviation: "GHG"
+    StaticSource: TRUE
+    StaticFile: "flowsa/FlowBySector/GHGc_state_CA_2022_v2.0.4.parquet"
+    FileLocation: "Local"
+    DataYears: [2022]
+    Locations: *id001
+    SectorListSource: "NAICS"
+    SectorListYear: 2017
+    SectorListLevel: "6"
+    OriginalFlowSource: "FEDEFLv1.1.0"
+    ScriptFunctionCall: "getFlowbySectorCollapsed"
+    ScriptFunctionParameters: null
+    DataSources:
+      USEPA_GHG_2022:
+        Title: "GHG Inventory"
+        Author: "USEPA"
+        DataYear: 2022
+        URL: "https://www.epa.gov/ghgemissions/inventory-us-greenhouse-gas-emissions-and-sinks-1990-2022"
+        Primary: TRUE
+
+Indicators:
+  GreenhouseGases:
+    Name: "Greenhouse Gases"
+    Code: "GHG"
+    Group: "Impact Potential"
+    Unit: "kg CO2 eq"
+    SimpleUnit: "Kilograms Carbon Dioxide (CO2)"
+    SimpleName: "Greenhouse Gases"
+    StaticSource: TRUE
+    StaticFile: "lciafmt/ipcc/IPCC_v1.1.1_27ba917.parquet"
+    FileLocation: "DataCommons"
+    ScriptFunctionCall: "getImpactMethod"
+    ScriptFunctionParameters:
+      indicators: ["AR6-100"]
+    DataSources:
+      IPCC_AR6:
+        Title: "IPCC Sixth Assessment Report: Direct Global Warming Potentials for 100 year time horizon"
+        Author: "IPCC"
+        DataYear: 2021
+        URL: ""
+        Primary: TRUE
+
+DemandVectors:
+  DefaultDemand: DefaultDemandVectors
+
+ImportFactors:
+  StaticFile: "useeior/US_summary_import_factors_exio_2022_17sch.csv"
+  FileLocation: "DataCommons"
+
+
+
+
