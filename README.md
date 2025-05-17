@@ -24,26 +24,31 @@ USEEIO_CARB_Runner/
 ├── USEEIO.py                 # Python interface to useeior/stateior/flowsa
 ├── environment.yml           # Conda environment file
 ├── .gitignore
-└── modelspecs/               # Model configuration files
+└── modelspecs/               # Model configuration files for useeior
     ├── bea_model_us_detailed_2017.yml
     └── bea_model_ca_summary_2022_after_IPCC.yml
 ```
 
 ## Dependencies and Model Sources
 
-| Component       | Source                                                        | Description                                            |
-| --------------- | ------------------------------------------------------------- | ------------------------------------------------------ |
-| `useeior`       | [USEPA/useeior](https://github.com/USEPA/useeior)             | Official EEIO model engine implemented in R            |
-| `stateior`      | [USEPA/stateior](https://github.com/USEPA/stateior)           | Builds state-level IO tables                           |
-| `flowsa_BEC`    | [leoal2/flowsa\_BEC](https://github.com/leoal2/flowsa_BEC)    | Modified version of flowsa including CA-specific flows |
-| `LCIAformatter` | [USEPA/LCIAformatter](https://github.com/USEPA/LCIAformatter) | Provides LCIA methods used by the model                |
-| `rpy2`          | [rpy2](https://rpy2.github.io/)                               | Interface between Python and R                         |
+| Component         | Source                                                                            | Description                                                  |
+| ----------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| `useeior`         | [USEPA/useeior](https://github.com/USEPA/useeior)                                 | Official EEIO model engine implemented in R                  |
+| `stateior`        | [USEPA/stateior](https://github.com/USEPA/stateior)                               | Builds state-level IO tables using a separate YAML spec      |
+| `flowsa_BEC`      | [leoal2/flowsa\_BEC](https://github.com/leoal2/flowsa_BEC)                        | Modified version of flowsa including CA-specific flows       |
+| `LCIAformatter`   | [USEPA/LCIAformatter](https://github.com/USEPA/LCIAformatter)                     | Provides LCIA methods used by the model                      |
+| `fedelemflowlist` | [USEPA/fedelemflowlist](https://github.com/USEPA/fedelemflowlist)                 | Used for mapping flows to standardized names and identifiers |
+| `esupy`           | [USEPA/esupy](https://github.com/USEPA/esupy)                                     | Provides shared utilities across EPA SMM tools               |
+| `stewi`           | [USEPA/standardizedinventories](https://github.com/USEPA/standardizedinventories) | Supports environmental inventories used in flowsa            |
+| `rpy2`            | [rpy2](https://rpy2.github.io/)                                                   | Interface between Python and R                               |
+
+Note: Only `flowsa_BEC` has been customized. The other dependencies (`fedelemflowlist`, `esupy`, and `stewi`) use the original EPA packages **except** that the file `fedelemflowlist/flowmapping/GHGI.csv` has been modified locally to incorporate CARB-specific mappings.
 
 ## Prerequisites: Build Supporting Data
 
-### Flowsa\_BEC
+### Step 1: Generate Environmental Data with Flowsa\_BEC
 
-Run the following Python commands to generate CA-specific flow and sector tables:
+Run the following Python commands:
 
 ```python
 from flowsa.flowbyactivity import getFlowByActivity 
@@ -54,46 +59,51 @@ df_fbs_m1 = getFlowBySector("GHG_state_2022_m1")
 df_fbs_ca = getFlowBySector("GHGc_state_CA_2022")
 ```
 
-This will generate the following required file:
+This will generate:
 
 ```
 flowsa/FlowBySector/GHGc_state_CA_2022_v2.0.4.parquet
 ```
 
-### StateIO
+This file is referenced by the California YAML model spec used in `useeior`.
 
-Run `stateior` using a configuration YAML such as:
+### Step 2: Build State IO Tables with stateior
+
+In R, install and run `stateior` using a configuration file such as:
 
 ```
 C:/Users/USERNAME/AppData/Local/Programs/R/R-4.4.2/library/stateior/extdata/modelspecs/StateIOv1.3-pecan.yml
 ```
 
-Key parameters of this YAML include:
+Example key parameters:
 
 ```
 Model: "StateIOv1.3-pecan"
 BaseIOSchema: 2017
 BaseIOLevel: "Summary"
 model_ver: "0.4.0"
-IOYear: [2012 ... 2023]
+IOYear: [2022]
 GeoScale: ["State", "TwoRegion"]
 IODataSource: "BEA"
-BasePriceType: "PRO"
-DataProduct: ["Make", "Use", "DomesticUse", "ValueAdded", ...]
+DataProduct: ["Make", "Use", "ValueAdded", "CommodityOutput"]
 ```
 
-### LCIAformatter
+This produces state-level Make and Use tables that are used by `useeior` when `IODataSource: stateior` is set in the model configuration.
 
-No changes are required if you use the standard files:
+### Step 3: Ensure LCIAformatter Files are Available
+
+You must have the following `.parquet` files locally:
 
 ```
 lciafmt/ipcc/IPCC_v1.1.1_27ba917.parquet
 lciafmt/traci/TRACI_2.1_v1.0.0_5555779.parquet
 ```
 
+These files are referenced by the `Indicators` section of the model YAML.
+
 ## USEEIO YAML Specifications
 
-These are YAML files used by `useeior` to build the model, typically located in:
+The main `useeior` model is controlled by YAML files in:
 
 ```
 ~/AppData/Local/Programs/R/R-4.4.2/library/useeior/extdata/modelspecs/
@@ -101,23 +111,11 @@ These are YAML files used by `useeior` to build the model, typically located in:
 
 Examples:
 
-* **California 2022 Summary**: `bea_model_ca_summary_2022_after_IPCC.yml`
+* `bea_model_us_detailed_2017.yml`: National detailed-level model (IODataSource: BEA)
+* `bea_model_ca_summary_2022_after_IPCC.yml`: California summary-level model using CARB-modified GHG data (IODataSource: stateior)
+* `CAEEIOv1.3-pecan-22.yml`: Two-region model for California + RoUS using `stateior` outputs and custom flowsa emissions
 
-  * `IODataSource`: `stateior`
-  * `ModelRegionAcronyms`: `[US-CA, RoUS]`
-  * `SatelliteTable.StaticFile`: `flowsa/FlowBySector/GHGc_state_CA_2022_v2.0.4.parquet`
-
-* **National Detailed**: `USEEIOv2.3-GHG.yml`
-
-  * `IODataSource`: `BEA`
-  * `ModelRegionAcronyms`: `[US]`
-  * `SatelliteTable.StaticFile`: `flowsa/FlowBySector/GHG_national_2019_m2_v2.0.3.parquet`
-
-* **CAEEIO Pecan Configuration**: `CAEEIOv1.3-pecan-22.yml`
-
-  * `Alias`: `pecan`
-  * `BaseIOLevel`: `Summary`
-  * `SatelliteTable.StaticFile`: `flowsa/FlowBySector/GHGc_state_CA_2022_v2.0.4_test.parquet`
+These files are edited dynamically via `USEEIO.py`, and must reference valid IOYears, BaseIOSchema, and satellite/indicator files.
 
 ## Installation
 
@@ -147,7 +145,7 @@ devtools::install_github("leoal2/flowsa_BEC")
 
 ## Running the Model
 
-Once prerequisites are complete, execute:
+Once prerequisites are complete:
 
 ```bash
 python run_model.py
@@ -155,29 +153,29 @@ python run_model.py
 
 This script will:
 
-* Load national and California EEIO models
-* Integrate Make/Use and emissions matrices
-* Apply CARB custom satellite data
-* Output Excel files with detailed GHG results
+* Load US and CA EEIO models
+* Integrate IO and satellite data
+* Compute detailed emissions factors and final demand
+* Output results as Excel files
 
 ## Outputs
 
-Two Excel files are generated:
+Two Excel files will be generated:
 
-* `CA_2022_2022USD_...xlsx`: results in 2022 USD
-* `CA_2022_2017USD_...xlsx`: results adjusted to 2017 USD
+* `CA_2022_2022USD_...xlsx`: emissions and IO results in 2022 USD
+* `CA_2022_2017USD_...xlsx`: CPI-adjusted results in 2017 USD
 
-Contents include:
+Each file contains:
 
 * L, A, D, N matrices
-* Final demand vectors
-* Emissions by sector for US, CA, and RoUS
+* Demand vectors and CPI-adjusted consumption
+* Sector-level GHG emissions (US, CA, RoUS)
 
-## Additional Notes
+## Notes
 
-* All satellite and indicator parquet files must exist locally or be generated prior to model execution
-* Model region and structure are defined by YAML files under `modelspecs/`
-* `USEEIO.py` handles model setup and dynamic YAML editing as required
+* All `.parquet` satellite/indicator files must be generated or downloaded locally
+* `USEEIO.py` dynamically configures and edits YAML specs
+* `flowsa_BEC` is the only package fully forked; the others use the latest EPA releases except for minor local adjustments to `fedelemflowlist`
 
 ## Contact
 
