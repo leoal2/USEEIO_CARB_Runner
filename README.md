@@ -140,7 +140,7 @@ install.packages("devtools")
 devtools::install_github("USEPA/useeior")
 devtools::install_github("USEPA/stateior")
 devtools::install_github("USEEPA/LCIAformatter")
-devtools::install_github("leoal2/flowsa_BEC")
+pip install git+https://github.com/leoal2/flowsa_CARB_version.git
 ```
 
 ## Running the Model
