@@ -35,7 +35,7 @@ USEEIO_CARB_Runner/
 | ----------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------ |
 | `useeior`         | [USEPA/useeior](https://github.com/USEPA/useeior)                                 | Official EEIO model engine implemented in R                  |
 | `stateior`        | [USEPA/stateior](https://github.com/USEPA/stateior)                               | Builds state-level IO tables using a separate YAML spec      |
-| `flowsa_BEC`      | [leoal2/flowsa\_BEC](https://github.com/leoal2/flowsa_BEC)                        | Modified version of flowsa including CA-specific flows       |
+| `flowsa_CARB_version` | [leoal2/flowsa_CARB_version](https://github.com/leoal2/flowsa_CARB_version) | Fork of EPA's FLOWSA with CARB-specific method files and inventory updates |
 | `LCIAformatter`   | [USEPA/LCIAformatter](https://github.com/USEPA/LCIAformatter)                     | Provides LCIA methods used by the model                      |
 | `fedelemflowlist` | [USEPA/fedelemflowlist](https://github.com/USEPA/fedelemflowlist)                 | Used for mapping flows to standardized names and identifiers |
 | `esupy`           | [USEPA/esupy](https://github.com/USEPA/esupy)                                     | Provides shared utilities across EPA SMM tools               |
