@@ -1,21 +1,17 @@
 import os
-os.environ["R_HOME"] = "C:/Users/lguillot/AppData/Local/Programs/R/R-4.4.2"
-os.environ["STATEIOR_DATADIR"] = "C:/Users/lguillot/AppData/Local/stateio"  # for Python
+os.environ["R_HOME"] = "C:/Users/<username>/AppData/Local/Programs/R/R-4.4.2"
+os.environ["STATEIOR_DATADIR"] = "C:/Users/<username>/AppData/Local/stateio" 
 
 import pandas as pd
 import USEEIO as EIO
 import numpy as np
-
 import rpy2.robjects as ro
 from rpy2.robjects.packages import importr
 
-# ✅ Also set for R session
 ro.r('Sys.setenv(STATEIOR_DATADIR = "C:/Users/lguillot/AppData/Local/stateio")')
 
 # Load USEEIO in R
 useeior = importr("useeior")
-
-
 
 def load_model(name, bea_year, ghg_year, region="US", detailed=True):
     try:
@@ -25,7 +21,7 @@ def load_model(name, bea_year, ghg_year, region="US", detailed=True):
             ghg_year=ghg_year,
             region=None if region == "US" else region,
             detailed=detailed,
-            preserve=True  # ✅ Prevents your YAML from being overwritten
+            preserve=True  
         )
         return model
     except Exception as e:
@@ -38,7 +34,7 @@ def process_matrix(matrix, name):
     
 
 def calculate_inputs_matrix(l_df, x_df, name):
-    print(f"\n🔍 {name} -- sum of L values: {np.sum(l_df.iloc[:, 1:].values)}")
+    print(f"\n {name} -- sum of L values: {np.sum(l_df.iloc[:, 1:].values)}")
     print(f"{name} -- sum of x values: {x_df['x'].sum()}")
     l_columns = l_df.columns[1:]
     x_codes = x_df["NAICS_Code"]
@@ -52,7 +48,7 @@ def calculate_inputs_matrix(l_df, x_df, name):
     inputs_df = pd.DataFrame(inputs_values, columns=l_columns, index=l_df["NAICS_Code"])
     inputs_df.insert(0, 'NAICS_Code', l_df["NAICS_Code"])
 
-    print(f"✅ {name} -- sum of resulting inputs matrix: {np.sum(inputs_values)}")
+    print(f" {name} -- sum of resulting inputs matrix: {np.sum(inputs_values)}")
 
     return inputs_df
 
@@ -100,7 +96,7 @@ def calculate_scaling_factors(inputs_df, crosswalk_df, name):
     scaling_factors_df.insert(0, 'NAICS_Code', inputs_df["NAICS_Code"])
 
     if scaling_factors_df.empty:
-        print("❌ ERROR: Scaling factors returned an EMPTY DataFrame!")
+        print(" ERROR: Scaling factors returned an EMPTY DataFrame!")
 
     return scaling_factors_df
 
@@ -286,7 +282,7 @@ def main():
         crosswalk_df.insert(0, 'BEA_Code', crosswalk_df.index)
 
         # Compute Inputs, Emissions, and Scaling Factors
-        print("\n🧪 Calling calculate_inputs_matrix with 2022 L and x...")
+        print("\n Calling calculate_inputs_matrix with 2022 L and x...")
         inputs_us_detailed_df = calculate_inputs_matrix(l_us_detailed_df, x_us_detailed_df, "US Detailed")
         inputs_ca_summary_df = calculate_inputs_matrix(l_ca_summary_df, x_ca_summary_df, "CA Summary")
 
@@ -393,10 +389,6 @@ def main():
         # Final output with consistent sector code column name
         detailed_ca_emissions_df = merged_df[["index", "Detailed_CA_Emissions"]].rename(columns={"index": "NAICS_Code"})
 
-
-
-
-
         # Save Initial Model Results
         sheets = {
             # Process initial matrices
@@ -409,7 +401,6 @@ def main():
             "CA_Summary_D": d_ca_summary_df,
             "CA_Summary_D_d": d_d_ca_summary_df,
 
-            
             # Process A matrices
             "US_Detailed_A": a_us_detailed_df,
             "CA_Summary_A": a_ca_summary_df,
@@ -444,7 +435,6 @@ def main():
             "A_Inputs_Detailed_CA": a_inputs_ca_detailed_df,
             #"N_Emissions_Detailed_CA": n_emissions_ca_detailed_df,
             
-            
             # Compute final detailed matrices
             "L_Detailed_CA": l_detailed_ca_df,
             "D_Detailed_CA": d_detailed_ca_df,
@@ -461,18 +451,15 @@ def main():
 
         }
 
-
-        output_excel_file = "CA_2022_2022USD_new4_ext_after_direct_IPCC.xlsx"
+        output_excel_file = "CA_2022_2022USD.xlsx"
         save_to_excel(sheets, output_excel_file)
 
          # **Adjusting L and D Matrices to 2017 Dollars**
-        print("\n🔹 Adjusting L and D matrices to 2017 dollars...")
+        print("\n Adjusting L and D matrices to 2017 dollars...")
         L_us_detailed_2017 = useeior.adjustResultMatrixPrice("L", 2017, False, us_model._model)
         D_us_detailed_2017 = useeior.adjustResultMatrixPrice("D", 2017, False, us_model._model)
         L_ca_summary_2017 = useeior.adjustResultMatrixPrice("L", 2017, False, ca_model._model)
         D_ca_summary_2017 = useeior.adjustResultMatrixPrice("D", 2022, False, ca_model._model)
-       
-
         A_us_detailed_2017 = useeior.adjustResultMatrixPrice("A", 2017, False, us_model._model)
         N_us_detailed_2017 = useeior.adjustResultMatrixPrice("N", 2017, False, us_model._model)
         A_ca_summary_2017 = useeior.adjustResultMatrixPrice("A", 2017, False, ca_model._model)
@@ -490,10 +477,10 @@ def main():
         l_ca_summary_2017_df = pd.DataFrame(np.array(L_ca_summary_2017), index=naics_codes_ca, columns=naics_codes_ca)
         d_d_ca_summary_2017_df = pd.DataFrame(np.array(D_ca_summary_2017), index=["Greenhouse Gases"], columns=naics_codes_ca)
 
-        print("\n🧩 CA Summary L matrix 2022 sample:")
+        print("\n CA Summary L matrix 2022 sample:")
         print(l_ca_summary_df.iloc[:5, :5])
 
-        print("\n🧩 CA Summary L matrix 2017 sample:")
+        print("\n CA Summary L matrix 2017 sample:")
         print(l_ca_summary_2017_df.iloc[:5, :5])
 
 
@@ -518,14 +505,14 @@ def main():
         # Rename output variable
         x_ca_summary_2017_df = x_ca_summary_2017_df[["NAICS_Code", "x"]]
 
-        print("\n🔎 First few rows of x_ca_summary_2017_df (should be adjusted):")
+        print("\n First few rows of x_ca_summary_2017_df (should be adjusted):")
         print(x_ca_summary_2017_df.head())
 
-        print("\n🔎 First few rows of x_ca_summary_df (original 2022):")
+        print("\n First few rows of x_ca_summary_df (original 2022):")
         print(x_ca_summary_df.head())
 
-        print("\n🧮 Total sum of x values - 2022:", x_ca_summary_df["x"].sum())
-        print("🧮 Total sum of x values - 2017:", x_ca_summary_2017_df["x"].sum())
+        print("\n Total sum of x values - 2022:", x_ca_summary_df["x"].sum())
+        print(" Total sum of x values - 2017:", x_ca_summary_2017_df["x"].sum())
 
 
 
@@ -620,7 +607,6 @@ def main():
         a_detailed_ca_2017_df = compute_detailed_l_ca(a_inputs_ca_detailed_2017_df, ca_detailed_x_2017_df, "A_Detailed_CA  (2017)")
         n_detailed_ca_2017_df = compute_detailed_d_ca(n_emissions_ca_detailed_2017_df, a_inputs_ca_detailed_2017_df, "N_Detailed_CA (2017)")
 
-
         # === Extract CPI Ratios and Adjust Consumption ===
         print("\n📊 Extracting CPI ratios from 2022 to 2017...")
 
@@ -712,7 +698,6 @@ def main():
         detailed_ca_emissions_2017_df = merged_df[["index", "Detailed_CA_Emissions"]].rename(columns={"index": "NAICS_Code"})
 
 
-
         # Create a dictionary of sheets for the 2017 adjusted matrices
         sheets_adjusted = {
             # Adjusted initial matrices (L, x, D)
@@ -724,8 +709,6 @@ def main():
             "CA_Summary_x_2017": x_ca_summary_2017_df,
             "CA_Summary_D_2017": d_ca_summary_2017_df,
             "CA_Summary_D_d_2017": d_d_ca_summary_2017_df,
-            
-
             
             # Adjusted A and N matrices
             "US_Detailed_A_2017": a_us_detailed_2017_df,
@@ -778,14 +761,12 @@ def main():
         }
 
         # Save all the adjusted sheets to the Excel file
-        output_excel_file_adjusted = "CA_2022_2017USD_new4_ext_after_direct_IPCC.xlsx"
+        output_excel_file_adjusted = "CA_2022_2017USD.xlsx"
         save_to_excel(sheets_adjusted, output_excel_file_adjusted)
-
-
 
     
     except Exception as e:
-        print(f"❌ ERROR: {str(e)}")
+        print(f"ERROR: {str(e)}")
 
 if __name__ == "__main__":
     main()
