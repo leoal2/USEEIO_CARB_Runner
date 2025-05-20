@@ -43,7 +43,9 @@ USEEIO_CARB_Runner/
 | `stateior` (R)        | https://github.com/USEPA/stateior                                                          |
 | `LCIAformatter` (Python) | https://github.com/USEPA/LCIAformatter                                               |
 | `flowsa_CARB_version` | https://github.com/leoal2/flowsa_CARB_version                                              |
-| `fedelemflowlist`, `esupy`, `stewi`, `rpy2` | Installed via `environment.yml` or pip                            |
+| `fedelemflowlist`, `esupy`, `stewi` | Installed automatically via `flowsa_CARB_version` fork |
+| `rpy2` | Installed via `environment.yml` |
+
 
 ---
 
@@ -76,7 +78,16 @@ install.packages("devtools")
 devtools::install_github("USEPA/useeior")
 devtools::install_github("USEPA/stateior")
 ```
+5. **Set required environment variables (optional but recommended)**
 
+If your scripts rely on R being correctly linked, you can set environment variables inside your `environment.yml` or manually in your shell:
+
+```bash
+export R_HOME="C:/Users/<username>/AppData/Local/Programs/R/R-4.4.2"
+export R_USER="C:/Users/<username>/Documents"
+export R_LIBS_USER="C:/Users/<username>/AppData/Local/Programs/R/R-4.4.2/library"
+
+```
 ---
 
 ## Manual Setup Requirements
