@@ -157,7 +157,7 @@ These are referenced in the `Indicators:` section of the YAML model files.
 If automatic downloading of `.rds` files fails, you can generate them yourself by running the provided R script:
 
 ```r
-source("%UserProfile%/USEEIO_CARB_Runner/build_all_stateio_years.R")
+source(paste0(Sys.getenv("USERPROFILE"), "/USEEIO_CARB_Runner/build_all_stateio_years.R"))
 ```
 
 This will create the necessary `State_Summary_...` and `TwoRegion_Summary_...` `.rds` files in:
