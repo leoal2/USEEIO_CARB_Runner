@@ -8,7 +8,7 @@ import numpy as np
 import rpy2.robjects as ro
 from rpy2.robjects.packages import importr
 
-ro.r('Sys.setenv(STATEIOR_DATADIR = "C:/Users/lguillot/AppData/Local/stateio")')
+ro.r('Sys.setenv(STATEIOR_DATADIR = "C:/Users/<username>/AppData/Local/stateio")')
 
 # Load USEEIO in R
 useeior = importr("useeior")
