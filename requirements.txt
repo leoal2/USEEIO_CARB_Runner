@@ -1,0 +1,18 @@
+flowsa @ git+https://github.com/leoal2/flowsa_CARB_version.git
+fedelemflowlist @ git+https://github.com/USEPA/fedelemflowlist.git
+esupy @ git+https://github.com/USEPA/esupy.git
+stewi @ git+https://github.com/USEPA/standardizedinventories.git
+LCIAformatter
+rpy2>=3.5
+numpy>=1.20,<2.0
+pandas>=1.4,<2.1
+matplotlib
+plotly
+pyyaml
+openpyxl
+requests
+python-dotenv
+seaborn
+xlrd
+tabula-py
+pycountry
