@@ -89,7 +89,7 @@ Copy the following YAML files into your local R library folder:
 C:/Users/<username>/AppData/Local/Programs/R/R-4.4.2/library/useeior/extdata/modelspecs/
 ```
 
-Files required:
+Example of files required:
 
 - `bea_model_us_detailed_2017.yml`
 - `bea_model_ca_summary_2022.yml`
@@ -116,17 +116,17 @@ Generates:
 flowsa/FlowBySector/GHGc_state_CA_2022_v2.0.4.parquet
 ```
 
-This is required by the configuration file ingested by useeior.
+This is required by the configuration yaml file ingested by useeior.
 
 ---
 
 ### 3. Ensure LCIAformatter `.parquet` files exist
 
-Make sure these files are locally available:
+Make sure these files are locally available or generated if needed:
 
 ```
-lciafmt/ipcc/IPCC_v1.1.1_27ba917.parquet
-lciafmt/traci/TRACI_2.1_v1.0.0_5555779.parquet
+lciafmt/ipcc/IPCC_<version>.parquet
+lciafmt/traci/TRACI_<version>.parquet
 ```
 
 They are referenced by the `Indicators:` section in the YAML models.
@@ -143,7 +143,7 @@ Run the following R script:
 source("C:/<your_path>/build_all_stateio_years.R")
 ```
 
-This script will automatically generate all `State_Summary_...` and `TwoRegion_Summary_...` `.rds` files, stored in:
+This script will automatically generate the necessary stateio outputs: `State_Summary_...` , `TwoRegion_Summary_...` `.rds` files, stored in:
 
 ```
 C:/Users/<username>/AppData/Local/stateio
