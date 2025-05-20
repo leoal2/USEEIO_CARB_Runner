@@ -215,7 +215,6 @@ dependencies:
       - cycler==0.12.1
       - distro==1.9.0
       - filelock==3.16.0
-      - flowsa==2.0.4
       - fonttools==4.54.1
       - fuzzywuzzy==0.18.0
       - idna==3.8
