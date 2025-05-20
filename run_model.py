@@ -233,7 +233,7 @@ def main():
             detailed=True
         )
         ca_model = load_model(
-            name="bea_model_ca_summary_2022_after_IPCC",
+            name="bea_model_ca_summary_2022",
             bea_year=2022,
             ghg_year=2022,
             region="CA",
