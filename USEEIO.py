@@ -1,15 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Sep  4 13:26:40 2024
-
-@author: jkessler
-"""
-
-"""
-Setup notes:  rpy2 can be installed fairly rapidly using conda... FOR SOME MAGIC REASON!
-conda install conda-forge::rpy2
-"""
-
 import os
 import yaml
 import shutil
@@ -22,8 +10,7 @@ from pathlib import Path
 # Define the local directory where the Parquet files are stored
 LOCAL_PARQUET_DIR = os.path.expanduser("~") + r"\AppData\Local\flowsa\FlowByActivity"
 
-# Define the folders where R on the computer 
-# (the one you use with relevant packages) resides
+# Define the folders 
 home = os.path.join(str(Path.home()), "AppData\\Local\\Programs\\R\\")
 r_version = os.listdir(home)[0]
 rfolder = os.path.join(home, r_version)
@@ -32,25 +19,22 @@ os.environ["R_HOME"] = rfolder
 # Proceed with setting other environment variables
 os.environ["PATH"] = rfolder + "/bin/x64" + ";" + os.environ["PATH"]
 
-#os.environ["R_HOME"] = r"C:\Users\lguillot\AppData\Local\anaconda3\envs\buildings\lib\R"
+#os.environ["R_HOME"] = r"C:\Users\<username>\AppData\Local\anaconda3\envs\buildings\lib\R"
 #os.environ["PATH"] = os.path.join(os.environ["R_HOME"], "bin", "x64") + ";" + os.environ["PATH"]
 
 import rpy2.robjects.packages as rpackages
 import rpy2.robjects as ro
 # Ensure STATEIOR_DATADIR is set in R session
-ro.r('Sys.setenv(STATEIOR_DATADIR = "C:/Users/lguillot/AppData/Local/stateio")')
-print("✅ STATEIOR_DATADIR in R is:", ro.r('Sys.getenv("STATEIOR_DATADIR")')[0])
+ro.r('Sys.setenv(STATEIOR_DATADIR = "C:/Users/<username>/AppData/Local/stateio")')
+print("STATEIOR_DATADIR in R is:", ro.r('Sys.getenv("STATEIOR_DATADIR")')[0])
 
 
 from rpy2.robjects import pandas2ri
 from rpy2.robjects.conversion import localconverter
 
 model_path = rfolder+r"\library\useeior\extdata\modelspecs"
-#model_path = "C:/Users/lguillot/AppData/Local/stateio/modelspecs"
 
-
-#output_folder = "C:/Users/jkessler/OneDrive - California Air Resources Board/AB 2446/Embodied Carbon/Analysis Work/Baseline and GHG Attribution"
-output_folder = "C:/Users/lguillot/Documents/CBP"
+output_folder = "C:/Users/<username>/Documents/CBP"
 
 # import R's utility package
 useeio = rpackages.importr('useeior')
@@ -62,7 +46,6 @@ print("List of Valid Models:")
 print(model_list)"""
 
 LOCAL_PARQUET_DIR = os.path.expanduser("~") + r"\AppData\Local\flowsa\FlowByActivity"
-
 
 def r_to_pandas(r_object):
     
@@ -103,9 +86,9 @@ class USEEIOConfig():
         self.filename = file
 
         if not os.path.exists(file):
-            raise FileNotFoundError(f"❌ ERROR: The YAML file '{filename}' does not exist in '{model_path}'. Please create or copy it before running the script.")
+            raise FileNotFoundError(f"ERROR: The YAML file '{filename}' does not exist in '{model_path}'. Please create or copy it before running the script.")
         
-        print(f"✅ Using existing YAML file: {file}")
+        print(f"Using existing YAML file: {file}")
         
         with open(file, 'r') as f:
             yaml_file = yaml.safe_load(f)
@@ -394,7 +377,7 @@ class Results():
 
         if not matching_tables or not matching_tables_domestic:
             raise ValueError(
-                f"❌ Could not find demand vector '{table}' or '{table_domestic}' in available names:\n{list(demandvectors.names)}"
+                f"Could not find demand vector '{table}' or '{table_domestic}' in available names:\n{list(demandvectors.names)}"
         )
 
         table_name = matching_tables[0]
