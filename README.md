@@ -100,7 +100,7 @@ Copy your model spec files into the following R folder:
 %R_LIBS_USER%\useeior\extdata\modelspecs\
 ```
 
-Required files:
+Example of required files:
 
 - `bea_model_us_detailed_2017.yml`
 - `bea_model_ca_summary_2022.yml`
@@ -122,7 +122,7 @@ df_fbs_ca = getFlowBySector("GHGc_state_CA_2022")
 Generates:
 
 ```
-flowsa/FlowBySector/GHGc_state_CA_2022_v2.0.4.parquet
+flowsa/FlowBySector/GHGc_state_CA_2022_<version>.parquet
 ```
 
 This file is required by the model YAML specifications in `useeior`.
