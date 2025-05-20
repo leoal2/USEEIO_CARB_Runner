@@ -97,7 +97,7 @@ These ensure that Python and `rpy2` correctly locate your R installation.
 Copy your model spec files into the following R folder:
 
 ```
-%R_LIBS_USER%\useeior\extdata\modelspecs\
+copy modelspecs\*.* %R_HOME%\library\useeior\extdata\modelspecs
 ```
 
 Example of required files:
