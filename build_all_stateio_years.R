@@ -20,7 +20,7 @@ if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
 
 # Loop over all years and build/save models
 for (year in years) {
-  message("🔄 Building StateIO models for year: ", year)
+  message("Building StateIO models for year: ", year)
 
   # Build State and TwoRegion models
   StateSupplyModel <- buildStateSupplyModel(year, specs = specs)
@@ -52,7 +52,7 @@ for (year in years) {
     useeior:::writeMetadatatoJSON("stateior", data_name, year, "stateior", NULL, as.character(Sys.Date()), NULL)
   }
 
-  message("✅ Finished year: ", year)
+  message("Finished year: ", year)
 }
 
-message("🎉 All StateIO data saved in: ", output_dir)
+message("All StateIO data saved in: ", output_dir)
