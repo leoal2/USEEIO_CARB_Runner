@@ -195,5 +195,3 @@ Each file contains:
 This project is maintained by California Air Resources Board (CARB) staff.
 
 For questions or collaboration, contact [leoal2 on GitHub](https://github.com/leoal2).
-```
-
