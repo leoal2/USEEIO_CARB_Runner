@@ -30,7 +30,7 @@ USEEIO_CARB_Runner/
 ├── build_all_stateio_years.R      # R script to generate stateior output data
 └── modelspecs/
     ├── bea_model_us_detailed_2017.yml
-    └── bea_model_ca_summary_2022_after_IPCC.yml
+    └── bea_model_ca_summary_2022.yml
 ```
 
 ---
@@ -77,8 +77,6 @@ devtools::install_github("USEPA/useeior")
 devtools::install_github("USEPA/stateior")
 ```
 
-> Do **not** install `LCIAformatter` as an R package — it is a Python package already included.
-
 ---
 
 ## Manual Setup Requirements
@@ -94,7 +92,7 @@ C:/Users/<username>/AppData/Local/Programs/R/R-4.4.2/library/useeior/extdata/mod
 Files required:
 
 - `bea_model_us_detailed_2017.yml`
-- `bea_model_ca_summary_2022_after_IPCC.yml`
+- `bea_model_ca_summary_2022.yml`
 
 ---
 
@@ -103,6 +101,7 @@ Files required:
 Run in Python:
 
 ```python
+import flowsa
 from flowsa.flowbyactivity import getFlowByActivity
 df_fba_ca = getFlowByActivity("StateGHGI_CA", 2022)
 
@@ -117,7 +116,7 @@ Generates:
 flowsa/FlowBySector/GHGc_state_CA_2022_v2.0.4.parquet
 ```
 
-This is required by the California `useeior` YAML.
+This is required by the configuration file ingested by useeior.
 
 ---
 
@@ -144,7 +143,7 @@ Run the following R script:
 source("C:/Users/<username>/Downloads/build_all_stateio_years.R")
 ```
 
-This script will automatically generate all `State_Summary_...` and `TwoRegion_Summary_...` `.rds` files from **2012 to 2022**, stored in:
+This script will automatically generate all `State_Summary_...` and `TwoRegion_Summary_...` `.rds` files, stored in:
 
 ```
 C:/Users/<username>/AppData/Local/stateio
@@ -187,7 +186,7 @@ Each file contains:
 
 - All `.yml` model specs must be correctly copied into the `useeior` R package folder.
 - All `.parquet` indicator and satellite files must be present locally.
-- If you modify `esupy` (e.g., to disable SSL verification), edit `esupy/io.py` and set `verify=False` in `make_url_request()`.
+- If you modify `esupy` (e.g., to disable SSL verification), edit `esupy/remote.py` and set `verify=False` in `make_url_request()`.
 
 ---
 
@@ -199,9 +198,3 @@ For questions or collaboration, contact [leoal2 on GitHub](https://github.com/le
 ```
 
 ---
-
-Let me know when you’re ready and I’ll help with:
-
-- Uploading `build_all_stateio_years.R` into your GitHub repo
-- Testing that your `flowsa_CARB_version` install instructions work for a clean user
-- Drafting a `requirements.txt` if you want to allow pip-only installation as a fallback
