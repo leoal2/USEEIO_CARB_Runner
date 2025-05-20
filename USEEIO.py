@@ -19,11 +19,9 @@ os.environ["R_HOME"] = rfolder
 # Proceed with setting other environment variables
 os.environ["PATH"] = rfolder + "/bin/x64" + ";" + os.environ["PATH"]
 
-#os.environ["R_HOME"] = r"C:\Users\<username>\AppData\Local\anaconda3\envs\buildings\lib\R"
-#os.environ["PATH"] = os.path.join(os.environ["R_HOME"], "bin", "x64") + ";" + os.environ["PATH"]
-
 import rpy2.robjects.packages as rpackages
 import rpy2.robjects as ro
+
 # Ensure STATEIOR_DATADIR is set in R session
 ro.r('Sys.setenv(STATEIOR_DATADIR = "C:/Users/<username>/AppData/Local/stateio")')
 print("STATEIOR_DATADIR in R is:", ro.r('Sys.getenv("STATEIOR_DATADIR")')[0])
