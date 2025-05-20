@@ -140,7 +140,7 @@ If your system cannot download `.rds` files from Data Commons (Amazon S3), you m
 Run the following R script:
 
 ```r
-source("C:/Users/<username>/Downloads/build_all_stateio_years.R")
+source("C:/<your_path>/build_all_stateio_years.R")
 ```
 
 This script will automatically generate all `State_Summary_...` and `TwoRegion_Summary_...` `.rds` files, stored in:
