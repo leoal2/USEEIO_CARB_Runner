@@ -261,8 +261,3 @@ dependencies:
       - typing-extensions==4.12.2
       - urllib3==2.2.2
       - xlrd==2.0.1
-variables:
-  R_HOME: C:/Users/lguillot/AppData/Local/Programs/R/R-4.4.2
-  R_USER: C:/Users/lguillot/Documents
-  R_LIBS_USER: C:/Users/lguillot/AppData/Local/Programs/R/R-4.4.2/library
-prefix: C:\Users\lguillot\AppData\Local\anaconda3\envs\buildings
