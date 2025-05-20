@@ -25,9 +25,9 @@ The model estimates total demand and greenhouse gas (GHG) emissions for:
 ```
 USEEIO_CARB_Runner/
 ├── run_model.py                    # Main execution script
-├── USEEIO.py                       # Python interface to useeior/stateior/flowsa
+├── USEEIO.py                       # Python interface to useeior
 ├── environment.yml                 # Conda environment file
-├── build_all_stateio_years.R      # R script to generate stateio data for all years (2012–2022)
+├── build_all_stateio_years.R      # R script to generate stateior output data
 └── modelspecs/
     ├── bea_model_us_detailed_2017.yml
     └── bea_model_ca_summary_2022_after_IPCC.yml
