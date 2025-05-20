@@ -35,6 +35,20 @@ USEEIO_CARB_Runner/
 - R must be installed separately from [CRAN](https://cran.r-project.org/).
 - Microsoft Visual C++ Redistributable for Visual Studio 2015–2022 may be required for some R and Python packages to compile successfully: [Download here](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist).
 
+## Quick Start (Windows Only)
+
+Once you've installed Conda and cloned this repository, you can use run_setup_and_model.bat to:
+
+- Activate the environment
+- Install FLOWSA
+- Set required R environment variables
+- Launch the model script
+
+You'll still need to manually install useeior and stateior in R. 
+
+For a step-by-step setup, use the following instructions.
+
+
 ## Installation
 
 1. **Clone this repository**
