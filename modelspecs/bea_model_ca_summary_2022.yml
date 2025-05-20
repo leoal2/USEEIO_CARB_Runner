@@ -1,4 +1,4 @@
-Model: bea_model_ca_summary_2022_after
+Model: bea_model_ca_summary_2022
 BaseIOSchema: 2017
 BaseIOLevel: Summary
 IOYear: 2022
