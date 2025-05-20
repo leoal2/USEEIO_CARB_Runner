@@ -2,8 +2,6 @@
 
 This repository provides a California-customized implementation of the U.S. EPA's Environmentally-Extended Input-Output (USEEIO) model. It includes a Python script that performs matrix decomposition, emissions estimation, and demand scaling using both national and California-specific data.
 
----
-
 ## Overview
 
 This project integrates:
@@ -18,8 +16,6 @@ The model estimates total demand and greenhouse gas (GHG) emissions for:
 - California (summary and detailed levels)
 - Rest of the U.S. (RoUS)
 
----
-
 ## Repository Structure
 
 ```
@@ -27,27 +23,17 @@ USEEIO_CARB_Runner/
 ├── run_model.py                    # Main execution script
 ├── USEEIO.py                       # Python interface to useeior
 ├── environment.yml                 # Conda environment file
-├── build_all_stateio_years.R      # R script to generate stateior output data
+├── build_all_stateio_years.R       # R script to generate stateior output data
 └── modelspecs/
     ├── bea_model_us_detailed_2017.yml
     └── bea_model_ca_summary_2022.yml
 ```
 
----
+## Prerequisites
 
-## Key Dependencies
-
-| Package              | Source                                                                                      |
-|----------------------|---------------------------------------------------------------------------------------------|
-| `useeior` (R)         | https://github.com/USEPA/useeior                                                           |
-| `stateior` (R)        | https://github.com/USEPA/stateior                                                          |
-| `LCIAformatter` (Python) | https://github.com/USEPA/LCIAformatter                                               |
-| `flowsa_CARB_version` | https://github.com/leoal2/flowsa_CARB_version                                              |
-| `fedelemflowlist`, `esupy`, `stewi` | Installed automatically via `flowsa_CARB_version` fork |
-| `rpy2` | Installed via `environment.yml` |
-
-
----
+- This repository assumes you have [Miniconda or Anaconda](https://docs.conda.io/en/latest/miniconda.html) installed.
+- R must be installed separately from [CRAN](https://cran.r-project.org/).
+- Microsoft Visual C++ Redistributable for Visual Studio 2015–2022 may be required for some R and Python packages to compile successfully: [Download here](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist).
 
 ## Installation
 
@@ -71,45 +57,57 @@ conda activate buildings
 pip install git+https://github.com/leoal2/flowsa_CARB_version.git
 ```
 
-4. **Install required R packages**
+4. **Install R (separately) and required R packages**
+
+Download and install R from [https://cran.r-project.org](https://cran.r-project.org).
+
+Then open R and run:
 
 ```r
-install.packages("devtools")
+install.packages("devtools", type = "win.binary")
 devtools::install_github("USEPA/useeior")
 devtools::install_github("USEPA/stateior")
 ```
-5. **Set required environment variables (optional but recommended)**
 
-If your scripts rely on R being correctly linked, you can set environment variables inside your `environment.yml` or manually in your shell:
+If installation fails due to missing packages like `miniUI`, `pkgload`, or `shiny`, install them individually using:
+
+```r
+install.packages("shiny", type = "win.binary")
+install.packages("pkgload", type = "win.binary")
+install.packages("htmlwidgets", type = "win.binary")
+# ...and so on
+```
+
+5. **Set R environment variables (Windows users only)**
+
+Set the following variables manually or add them to your terminal configuration:
 
 ```bash
-export R_HOME="C:/Users/<username>/AppData/Local/Programs/R/R-4.4.2"
-export R_USER="C:/Users/<username>/Documents"
-export R_LIBS_USER="C:/Users/<username>/AppData/Local/Programs/R/R-4.4.2/library"
-
+set R_HOME=%ProgramFiles%\R\R-<version>
+set R_USER=%UserProfile%\Documents
+set R_LIBS_USER=%LocalAppData%\Programs\R\R-<version>\library
 ```
----
+
+These ensure that Python and `rpy2` correctly locate your R installation.
 
 ## Manual Setup Requirements
 
 ### 1. Copy YAML model spec files
 
-Copy the following YAML files into your local R library folder:
+Copy your model spec files into the following R folder:
 
 ```
-C:/Users/<username>/AppData/Local/Programs/R/R-4.4.2/library/useeior/extdata/modelspecs/
+%R_LIBS_USER%\useeior\extdata\modelspecs\
 ```
 
-Example of files required:
+Required files:
 
 - `bea_model_us_detailed_2017.yml`
 - `bea_model_ca_summary_2022.yml`
 
----
-
 ### 2. Generate CA-specific emissions files using FLOWSA
 
-Run in Python:
+Run the following in Python:
 
 ```python
 import flowsa
@@ -127,82 +125,72 @@ Generates:
 flowsa/FlowBySector/GHGc_state_CA_2022_v2.0.4.parquet
 ```
 
-This is required by the configuration yaml file ingested by useeior.
-
----
+This file is required by the model YAML specifications in `useeior`.
 
 ### 3. Ensure LCIAformatter `.parquet` files exist
 
-Make sure these files are locally available or generated if needed:
+Make sure these files are present:
 
 ```
 lciafmt/ipcc/IPCC_<version>.parquet
 lciafmt/traci/TRACI_<version>.parquet
 ```
 
-They are referenced by the `Indicators:` section in the YAML models.
+These are referenced in the `Indicators:` section of the YAML model files.
 
----
+### 4. (Optional) Generate `stateior` outputs locally if S3 access fails
 
-### 4. (Optional) Run `stateior` locally if S3 downloads fail
-
-If your system cannot download `.rds` files from Data Commons (Amazon S3), you must generate them locally.
-
-Run the following R script:
+If automatic downloading of `.rds` files fails, you can generate them yourself by running the provided R script:
 
 ```r
-source("C:/<your_path>/build_all_stateio_years.R")
+source("%UserProfile%/USEEIO_CARB_Runner/build_all_stateio_years.R")
 ```
 
-This script will automatically generate the necessary stateio outputs: `State_Summary_...` , `TwoRegion_Summary_...` `.rds` files, stored in:
+This will create the necessary `State_Summary_...` and `TwoRegion_Summary_...` `.rds` files in:
 
 ```
-C:/Users/<username>/AppData/Local/stateio
+%LocalAppData%\stateio\
 ```
 
----
+## Running the Model
 
-## Run the Model
+Once everything is set up, run:
 
 ```bash
 python run_model.py
 ```
 
-This script will:
+The script will:
 
-- Load both US and California models
-- Generate detailed `L`, `D`, `A`, and `N` matrices
-- Scale and disaggregate summary-level data for California
-- Estimate GHG emissions in both 2022 and CPI-adjusted 2017 dollars
-- Output Excel files with all matrices and results
-
----
+- Load both US and California EEIO models
+- Generate `L`, `A`, `D`, and `N` matrices
+- Scale and disaggregate California demand
+- Estimate GHG emissions for 2022 and adjust to 2017 USD
+- Export results to Excel
 
 ## Outputs
 
-You will get two Excel workbooks:
+The output will include:
 
-- `CA_2022_2022USD_...xlsx` – with 2022 dollar values
-- `CA_2022_2017USD_...xlsx` – adjusted to 2017 USD using CPI
+- `CA_2022_2022USD_...xlsx`: results in 2022 dollars
+- `CA_2022_2017USD_...xlsx`: results in CPI-adjusted 2017 dollars
 
 Each file contains:
 
-- L, A, D, N matrices (detailed + summary)
-- Final demand and consumption vectors
-- Sector-specific GHG emissions (US, CA, RoUS)
-
----
+- Lifecycle matrices (L, A, D, N)
+- Final demand vectors
+- Sector-specific emissions for US, California, and RoUS
 
 ## Notes
 
-- All `.yml` model specs must be correctly copied into the `useeior` R package folder.
-- All `.parquet` indicator and satellite files must be present locally.
-- If you modify `esupy` (e.g., to disable SSL verification), edit `esupy/remote.py` and set `verify=False` in `make_url_request()`.
-
----
+- EPA dependencies like `esupy`, `stewi`, and `fedelemflowlist` are installed automatically via the `flowsa_CARB_version` fork.
+- All `.yml` model specs must be placed in the correct `useeior` folder.
+- `.parquet` indicator and satellite files must be available locally.
+- You may need Microsoft Visual C++ Redistributables for Python/R interop via `rpy2`.
 
 ## Contact
 
-This project is maintained by California Air Resources Board (CARB) staff.
+This project is maintained by staff at the California Air Resources Board (CARB).
 
-For questions or collaboration, contact [leoal2 on GitHub](https://github.com/leoal2).
+For questions, please contact [leoal2 on GitHub](https://github.com/leoal2).
+
