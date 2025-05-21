@@ -163,7 +163,7 @@ source(paste0(Sys.getenv("USERPROFILE"), "/USEEIO_CARB_Runner/build_all_stateio_
 This will create the necessary `State_Summary_...` and `TwoRegion_Summary_...` `.rds` files in:
 
 ```
-%LocalAppData%\stateio\
+output_dir <- paste0(Sys.getenv("USERPROFILE"), "/AppData/Local/stateio")
 ```
 
 ## Running the Model
