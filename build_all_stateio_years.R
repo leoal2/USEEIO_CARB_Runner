@@ -5,7 +5,7 @@ library(stateior)
 model_spec <- "StateIOv1.3-pecan"
 years <- 2012:2022
 version <- utils::packageDescription("stateior", fields = "Version")
-output_dir <- "C:/Users/lguillot/AppData/Local/stateio" # to change accordingly
+output_dir <- paste0(Sys.getenv("USERPROFILE"),"/AppData/Local/stateio") # to change accordingly
 
 
 # Load model specs from YAML
