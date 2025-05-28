@@ -67,13 +67,7 @@ conda env create -f environment.yml
 conda activate buildings
 ```
 
-3. **Install modified FLOWSA package**
-
-```bash
-pip install git+https://github.com/leoal2/flowsa_CARB_version.git
-```
-
-4. **Install R (separately) and required R packages**
+3. **Install R (separately) and required R packages**
 
 We recommend installing R separately from CRAN instead of relying on Conda’s R, due to compatibility issues with some packages.
 Download and install R from [https://cran.r-project.org](https://cran.r-project.org).
@@ -95,7 +89,7 @@ install.packages("htmlwidgets", type = "win.binary")
 # ...and so on
 ```
 
-5. **Set R environment variables (Windows users only)**
+4. **Set R environment variables (Windows users only)**
 
 Set the following variables manually or add them to your terminal configuration:
 
