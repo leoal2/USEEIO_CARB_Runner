@@ -1,6 +1,12 @@
 import os
-os.environ["R_HOME"] = "C:/Users/<username>/AppData/Local/Programs/R/R-4.4.2"
-os.environ["STATEIOR_DATADIR"] = "C:/Users/<username>/AppData/Local/stateio" 
+
+user_profile = os.environ.get("USERPROFILE")
+local_appdata = os.environ.get("LOCALAPPDATA")
+program_files = os.environ.get("ProgramFiles")
+
+# Dynamically set R_HOME and STATEIOR_DATADIR
+os.environ["R_HOME"] = os.path.join(program_files, "R", "R-4.4.2")
+os.environ["STATEIOR_DATADIR"] = os.path.join(local_appdata, "stateio")
 
 import pandas as pd
 import USEEIO as EIO
@@ -8,7 +14,7 @@ import numpy as np
 import rpy2.robjects as ro
 from rpy2.robjects.packages import importr
 
-ro.r('Sys.setenv(STATEIOR_DATADIR = "C:/Users/<username>/AppData/Local/stateio")')
+ro.r(f'Sys.setenv(STATEIOR_DATADIR = "{os.path.join(local_appdata, "stateio")}")')
 
 # Load USEEIO in R
 useeior = importr("useeior")
