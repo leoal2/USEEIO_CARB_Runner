@@ -1,58 +1,50 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Sep  4 13:26:40 2024
-
-@author: jkessler
-"""
-
-"""
-Setup notes:  rpy2 can be installed fairly rapidly using conda... FOR SOME MAGIC REASON!
-conda install conda-forge::rpy2
-"""
-
 import os
-import yaml
 import shutil
-from DataCommons import list_parquet_files
-from DataCommons import list_state_files
+import glob
+from pathlib import Path
+import yaml
 import re
 import pandas as pd
-from pathlib import Path
 
-# Define the local directory where the Parquet files are stored
-LOCAL_PARQUET_DIR = os.path.expanduser("~") + r"\AppData\Local\flowsa\FlowByActivity"
+# Define system paths
+user_profile = os.environ.get("USERPROFILE")
+local_appdata = os.environ.get("LOCALAPPDATA")
 
-# Define the folders where R on the computer 
-# (the one you use with relevant packages) resides
-home = os.path.join(str(Path.home()), "AppData\\Local\\Programs\\R\\")
+# Dynamically set R_HOME
+home = os.path.join(user_profile, "AppData", "Local", "Programs", "R")
 r_version = os.listdir(home)[0]
 rfolder = os.path.join(home, r_version)
 os.environ["R_HOME"] = rfolder
-
-# Proceed with setting other environment variables
 os.environ["PATH"] = rfolder + "/bin/x64" + ";" + os.environ["PATH"]
 
-#os.environ["R_HOME"] = r"C:\Users\lguillot\AppData\Local\anaconda3\envs\buildings\lib\R"
-#os.environ["PATH"] = os.path.join(os.environ["R_HOME"], "bin", "x64") + ";" + os.environ["PATH"]
+# Dynamically set STATEIOR_DATADIR
+stateio_dir = os.path.join(local_appdata, "stateio")
+os.environ["STATEIOR_DATADIR"] = stateio_dir
+
+# Ensure stateio directory exists
+os.makedirs(stateio_dir, exist_ok=True)
+
+# Check and copy pre-generated .rds files if missing
+repo_stateio_dir = os.path.join(os.path.dirname(__file__), "stateio_data")
+for rds_file in glob.glob(os.path.join(repo_stateio_dir, '*.rds')):
+    filename = os.path.basename(rds_file)
+    target_file = os.path.join(stateio_dir, filename)
+    if not os.path.exists(target_file):
+        print(f"Copying {filename} to {stateio_dir}")
+        shutil.copy2(rds_file, target_file)
 
 import rpy2.robjects.packages as rpackages
 import rpy2.robjects as ro
-# Ensure STATEIOR_DATADIR is set in R session
-ro.r('Sys.setenv(STATEIOR_DATADIR = "C:/Users/lguillot/AppData/Local/stateio")')
-print("✅ STATEIOR_DATADIR in R is:", ro.r('Sys.getenv("STATEIOR_DATADIR")')[0])
-
+ro.r(f'Sys.setenv(STATEIOR_DATADIR = "{stateio_dir}")')
+print("STATEIOR_DATADIR in R is:", ro.r('Sys.getenv("STATEIOR_DATADIR")')[0])
 
 from rpy2.robjects import pandas2ri
 from rpy2.robjects.conversion import localconverter
 
-model_path = rfolder+r"\library\useeior\extdata\modelspecs"
-#model_path = "C:/Users/lguillot/AppData/Local/stateio/modelspecs"
+model_path = os.path.join(rfolder, "library", "useeior", "extdata", "modelspecs")
+output_folder = os.path.join(user_profile, "Documents", "CBP")
 
-
-#output_folder = "C:/Users/jkessler/OneDrive - California Air Resources Board/AB 2446/Embodied Carbon/Analysis Work/Baseline and GHG Attribution"
-output_folder = "C:/Users/lguillot/Documents/CBP"
-
-# import R's utility package
+# Import R's utility package
 useeio = rpackages.importr('useeior')
 
 #Available models
@@ -62,7 +54,6 @@ print("List of Valid Models:")
 print(model_list)"""
 
 LOCAL_PARQUET_DIR = os.path.expanduser("~") + r"\AppData\Local\flowsa\FlowByActivity"
-
 
 def r_to_pandas(r_object):
     
@@ -103,9 +94,9 @@ class USEEIOConfig():
         self.filename = file
 
         if not os.path.exists(file):
-            raise FileNotFoundError(f"❌ ERROR: The YAML file '{filename}' does not exist in '{model_path}'. Please create or copy it before running the script.")
+            raise FileNotFoundError(f"ERROR: The YAML file '{filename}' does not exist in '{model_path}'. Please create or copy it before running the script.")
         
-        print(f"✅ Using existing YAML file: {file}")
+        print(f"Using existing YAML file: {file}")
         
         with open(file, 'r') as f:
             yaml_file = yaml.safe_load(f)
@@ -394,7 +385,7 @@ class Results():
 
         if not matching_tables or not matching_tables_domestic:
             raise ValueError(
-                f"❌ Could not find demand vector '{table}' or '{table_domestic}' in available names:\n{list(demandvectors.names)}"
+                f"Could not find demand vector '{table}' or '{table_domestic}' in available names:\n{list(demandvectors.names)}"
         )
 
         table_name = matching_tables[0]

@@ -1,4 +1,4 @@
-Model: bea_model_ca_summary_2022_after
+Model: bea_model_ca_summary_2022
 BaseIOSchema: 2017
 BaseIOLevel: Summary
 IOYear: 2022
@@ -20,7 +20,7 @@ SatelliteTable:
     FullName: "Greenhouse Gases"
     Abbreviation: "GHG"
     StaticSource: TRUE
-    StaticFile: "flowsa/FlowBySector/GHGc_state_CA_2022_v2.0.4.parquet"
+    StaticFile: "flowsa/FlowBySector/GHGc_state_CA_2022_v2.0.5.parquet"
     FileLocation: "Local"
     DataYears: [2022]
     Locations: *id001
