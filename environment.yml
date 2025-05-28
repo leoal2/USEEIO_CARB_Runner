@@ -34,3 +34,4 @@ dependencies:
       - botocore
       - s3transfer
       - python-dotenv
+      - git+https://github.com/leoal2/flowsa_CARB_version.git
