@@ -1,3 +1,5 @@
+This guide assumes you are using Anaconda Prompt (Windows). Please install Miniconda or Anaconda before following these steps.
+
 # USEEIO_CARB_Runner
 
 This repository provides a California-customized implementation of the U.S. EPA's Environmentally-Extended Input-Output (USEEIO) model. It includes a Python script that performs matrix decomposition, emissions estimation, and demand scaling using both national and California-specific data.
@@ -73,6 +75,7 @@ pip install git+https://github.com/leoal2/flowsa_CARB_version.git
 
 4. **Install R (separately) and required R packages**
 
+We recommend installing R separately from CRAN instead of relying on Conda’s R, due to compatibility issues with some packages.
 Download and install R from [https://cran.r-project.org](https://cran.r-project.org).
 
 Then open R and run:
