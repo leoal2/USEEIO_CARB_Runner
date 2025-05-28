@@ -1,47 +1,50 @@
 import os
-import yaml
 import shutil
-from DataCommons import list_parquet_files
-from DataCommons import list_state_files
+import glob
+from pathlib import Path
+import yaml
 import re
 import pandas as pd
-from pathlib import Path
 
-# Define the local directory where the Parquet files are stored
-LOCAL_PARQUET_DIR = os.path.expanduser("~") + r"\AppData\Local\flowsa\FlowByActivity"
-
-# Define the folders 
-home = os.path.join(str(Path.home()), "AppData\\Local\\Programs\\R\\")
-r_version = os.listdir(home)[0]
-rfolder = os.path.join(home, r_version)
-os.environ["R_HOME"] = rfolder
-
-# Proceed with setting other environment variables
-os.environ["PATH"] = rfolder + "/bin/x64" + ";" + os.environ["PATH"]
-
-import rpy2.robjects.packages as rpackages
-import rpy2.robjects as ro
-
-# Dynamically set STATEIOR_DATADIR using system variables
+# Define system paths
 user_profile = os.environ.get("USERPROFILE")
 local_appdata = os.environ.get("LOCALAPPDATA")
 
+# Dynamically set R_HOME
+home = os.path.join(user_profile, "AppData", "Local", "Programs", "R")
+r_version = os.listdir(home)[0]
+rfolder = os.path.join(home, r_version)
+os.environ["R_HOME"] = rfolder
+os.environ["PATH"] = rfolder + "/bin/x64" + ";" + os.environ["PATH"]
+
+# Dynamically set STATEIOR_DATADIR
 stateio_dir = os.path.join(local_appdata, "stateio")
-
 os.environ["STATEIOR_DATADIR"] = stateio_dir
+
+# Ensure stateio directory exists
+os.makedirs(stateio_dir, exist_ok=True)
+
+# Check and copy pre-generated .rds files if missing
+repo_stateio_dir = os.path.join(os.path.dirname(__file__), "stateio_data")
+for rds_file in glob.glob(os.path.join(repo_stateio_dir, '*.rds')):
+    filename = os.path.basename(rds_file)
+    target_file = os.path.join(stateio_dir, filename)
+    if not os.path.exists(target_file):
+        print(f"Copying {filename} to {stateio_dir}")
+        shutil.copy2(rds_file, target_file)
+
+import rpy2.robjects.packages as rpackages
+import rpy2.robjects as ro
 ro.r(f'Sys.setenv(STATEIOR_DATADIR = "{stateio_dir}")')
-
 print("STATEIOR_DATADIR in R is:", ro.r('Sys.getenv("STATEIOR_DATADIR")')[0])
-
 
 from rpy2.robjects import pandas2ri
 from rpy2.robjects.conversion import localconverter
 
-model_path = rfolder+r"\library\useeior\extdata\modelspecs"
+model_path = os.path.join(rfolder, "library", "useeior", "extdata", "modelspecs")
+output_folder = os.path.join(user_profile, "Documents", "CBP")
 
-output_folder = "C:/Users/<username>/Documents/CBP"
-
-# import R's utility package
+# Import R's utility package
 useeio = rpackages.importr('useeior')
 
 #Available models
