@@ -151,6 +151,10 @@ These are referenced in the `Indicators:` section of the YAML model files.
 
 ### 4. (Optional) Generate `stateior` outputs locally if S3 access fails
 
+Pre-generated `.rds` files are included in the repository under `stateio_data/`.
+When you run the Python scripts, they will automatically check if the required `.rds` files are present in your `%LocalAppData%\stateio` directory.
+If any are missing, the scripts will copy them over automatically.
+
 If automatic downloading of `.rds` files fails, you can generate them yourself by running the provided R script:
 
 ```r
