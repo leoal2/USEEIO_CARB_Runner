@@ -203,6 +203,22 @@ Each file contains:
 - `.parquet` indicator and satellite files must be available locally.
 - You may need Microsoft Visual C++ Redistributables for Python/R interop via `rpy2`.
 
+## Important Notes on Runtime & SSL Setup
+
+Some steps, like running FLOWSA or manually generating stateior .rds files, can take a significant amount of time (sometimes several minutes). This is normal — please be patient and do not assume the script has errored just because it appears inactive.
+
+If you encounter SSL/TLS certificate errors when running Python or pip, install the pip-system-certs package to make sure Python uses your system’s trusted certificates:
+
+```bash
+pip install pip-system-certs
+```
+
+For applications built with PyInstaller, add this line at the very top of your main Python script (before importing requests or anything using it):
+
+```python
+import pip_system_certs.wrapt_requests
+```
+
 ## Contact
 
 This project is maintained by staff at the California Air Resources Board (CARB).
