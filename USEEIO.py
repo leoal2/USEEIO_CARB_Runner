@@ -35,7 +35,7 @@ for rds_file in glob.glob(os.path.join(repo_stateio_dir, '*.rds')):
 
 import rpy2.robjects.packages as rpackages
 import rpy2.robjects as ro
-ro.r(f'Sys.setenv(STATEIOR_DATADIR = "{stateio_dir}")')
+ro.r(f'Sys.setenv(STATEIOR_DATADIR = "{stateio_dir.replace(os.sep, "/")}")')
 print("STATEIOR_DATADIR in R is:", ro.r('Sys.getenv("STATEIOR_DATADIR")')[0])
 
 from rpy2.robjects import pandas2ri
