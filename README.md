@@ -53,6 +53,12 @@ For a step-by-step setup, use the following instructions.
 
 ## Installation
 
+Before running the following steps, make sure git is installed inside your Conda environment:
+
+```bash
+conda install git
+```
+
 1. **Clone this repository**
 
 ```bash
