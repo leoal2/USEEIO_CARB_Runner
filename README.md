@@ -21,43 +21,52 @@ The model estimates total demand and greenhouse gas (GHG) emissions for:
 ## Repository Structure
 
 ```
-USEEIO_CARB_Runner/
-├── run_model.py                    # Main execution script
+
+USEEIO\_CARB\_Runner/
+├── run\_model.py                    # Main execution script
 ├── USEEIO.py                       # Python interface to useeior
 ├── environment.yml                 # Conda environment file
-├── build_all_stateio_years.R       # R script to generate stateior output data
+├── build\_all\_stateio\_years.R       # R script to generate stateior output data
 └── modelspecs/
-    ├── bea_model_us_detailed_2017.yml
-    └── bea_model_ca_summary_2022.yml
-```
+├── bea\_model\_us\_detailed\_2017.yml
+└── bea\_model\_ca\_summary\_2022.yml
 
-## Prerequisites
+````
 
-- This repository assumes you have [Miniconda or Anaconda](https://docs.conda.io/en/latest/miniconda.html) installed.
-- R must be installed separately from [CRAN](https://cran.r-project.org/).
-- Microsoft Visual C++ Redistributable for Visual Studio 2015–2022 may be required for some R and Python packages to compile successfully: [Download here](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist).
+## Prerequisites (IMPORTANT ORDER)
 
-## Quick Start (Windows Only)
+Before starting anything, follow this order:
 
-Once you've installed Conda and cloned this repository, you can use run_setup_and_model.bat to:
+1. **Install R 4.4.3**  
+   Download directly from CRAN (do NOT install R via Conda):  
+    [https://cran.r-project.org/bin/windows/base/](https://cran.r-project.org/bin/windows/base/)
 
-- Activate the environment
-- Install FLOWSA
-- Set required R environment variables
-- Launch the model script
+2. **Install Rtools**  
+   You’ll need Rtools to compile some packages.  
+    [https://cran.r-project.org/bin/windows/Rtools/](https://cran.r-project.org/bin/windows/Rtools/)
 
-You'll still need to manually install useeior and stateior in R. 
+3. **Install required R packages (`useeior`, `stateior`)**  
+   In R (after installing R + Rtools), run:
 
-For a step-by-step setup, use the following instructions.
+   ```r
+   install.packages("devtools", type = "win.binary")
+   devtools::install_github("USEEPA/useeior")
+   devtools::install_github("USEEPA/stateior")
+````
 
+4. **Install Miniconda or Anaconda**
+    [https://docs.conda.io/en/latest/miniconda.html](https://docs.conda.io/en/latest/miniconda.html)
+
+5. **Make sure `git` is available inside Conda**
+   After activating Conda, run:
+
+   ```bash
+   conda install git
+   ```
+
+---
 
 ## Installation
-
-Before running the following steps, make sure git is installed inside your Conda environment:
-
-```bash
-conda install git
-```
 
 1. **Clone this repository**
 
@@ -73,39 +82,19 @@ conda env create -f environment.yml
 conda activate buildings
 ```
 
-3. **Install R (separately) and required R packages**
+3. **(If needed) Set R environment variables (Windows users only)**
 
-We recommend installing R separately from CRAN instead of relying on Conda’s R, due to compatibility issues with some packages.
-Download and install R from [https://cran.r-project.org](https://cran.r-project.org).
-
-Then open R and run:
-
-```r
-install.packages("devtools", type = "win.binary")
-devtools::install_github("USEPA/useeior")
-devtools::install_github("USEPA/stateior")
-```
-
-If installation fails due to missing packages like `miniUI`, `pkgload`, or `shiny`, install them individually using:
-
-```r
-install.packages("shiny", type = "win.binary")
-install.packages("pkgload", type = "win.binary")
-install.packages("htmlwidgets", type = "win.binary")
-# ...and so on
-```
-
-4. **Set R environment variables (Windows users only)**
-
-Set the following variables manually or add them to your terminal configuration:
+If you installed R before Conda, the `R_HOME` path is often automatically available and may not need to be reset. However, if you encounter Python/R interop issues, you can manually set:
 
 ```bash
-set R_HOME=%ProgramFiles%\R\R-<version>
+set R_HOME=%LocalAppData%\Programs\R\R-4.4.3
 set R_USER=%UserProfile%\Documents
-set R_LIBS_USER=%LocalAppData%\Programs\R\R-<version>\library
+set R_LIBS_USER=%LocalAppData%\Programs\R\R-4.4.3\library
 ```
 
 These ensure that Python and `rpy2` correctly locate your R installation.
+
+---
 
 ## Manual Setup Requirements
 
@@ -113,14 +102,14 @@ These ensure that Python and `rpy2` correctly locate your R installation.
 
 Copy your model spec files into the following R folder:
 
-```
+```bash
 copy modelspecs\*.* %R_HOME%\library\useeior\extdata\modelspecs
 ```
 
 Example of required files:
 
-- `bea_model_us_detailed_2017.yml`
-- `bea_model_ca_summary_2022.yml`
+* `bea_model_us_detailed_2017.yml`
+* `bea_model_ca_summary_2022.yml`
 
 ### 2. Generate CA-specific emissions files using FLOWSA
 
@@ -173,6 +162,8 @@ This will create the necessary `State_Summary_...` and `TwoRegion_Summary_...` `
 output_dir <- paste0(Sys.getenv("USERPROFILE"), "/AppData/Local/stateio")
 ```
 
+---
+
 ## Running the Model
 
 Once everything is set up, run:
@@ -183,35 +174,46 @@ python run_model.py
 
 The script will:
 
-- Load both US and California EEIO models
-- Generate `L`, `A`, `D`, and `N` matrices
-- Scale and disaggregate California demand
-- Estimate GHG emissions for 2022 and adjust to 2017 USD
-- Export results to Excel
+* Load both US and California EEIO models
+* Generate `L`, `A`, `D`, and `N` matrices
+* Scale and disaggregate California demand
+* Estimate GHG emissions for 2022 and adjust to 2017 USD
+* Export results to Excel
+
+---
 
 ## Outputs
 
 The output will include:
 
-- `CA_2022_2022USD_...xlsx`: results in 2022 dollars
-- `CA_2022_2017USD_...xlsx`: results in CPI-adjusted 2017 dollars
+* `CA_2022_2022USD_...xlsx`: results in 2022 dollars
+* `CA_2022_2017USD_...xlsx`: results in CPI-adjusted 2017 dollars
 
 Each file contains:
 
-- Lifecycle matrices (L, A, D, N)
-- Final demand vectors
-- Sector-specific emissions for US, California, and RoUS
+* Lifecycle matrices (L, A, D, N)
+* Final demand vectors
+* Sector-specific emissions for US, California, and RoUS
+
+---
 
 ## Notes
 
-- EPA dependencies like `esupy`, `stewi`, and `fedelemflowlist` are installed automatically via the `flowsa_CARB_version` fork.
-- All `.yml` model specs must be placed in the correct `useeior` folder.
-- `.parquet` indicator and satellite files must be available locally.
-- You may need Microsoft Visual C++ Redistributables for Python/R interop via `rpy2`.
+* EPA dependencies like `esupy`, `stewi`, and `fedelemflowlist` are installed automatically via the `flowsa_CARB_version` fork.
+* All `.yml` model specs must be placed in the correct `useeior` folder.
+* `.parquet` indicator and satellite files must be available locally.
+* You may need Microsoft Visual C++ Redistributables for Python/R interop via `rpy2`.
+
+**Why this installation order?**
+Installing R + Rtools before Conda ensures that the correct system paths (like `R_HOME`) are set and persist when Conda activates its environments.
+This avoids common issues with missing compilers or misaligned paths when using `rpy2` or other Python-R bridges.
+
+---
 
 ## Important Notes on Runtime & SSL Setup
 
-Some steps, like running FLOWSA or manually generating stateior .rds files, can take a significant amount of time (sometimes several minutes). This is normal — please be patient and do not assume the script has errored just because it appears inactive.
+Some steps, like running FLOWSA or manually generating stateior .rds files, can take a significant amount of time (sometimes several minutes).
+This is normal — please be patient and do not assume the script has errored just because it appears inactive.
 
 If you encounter SSL/TLS certificate errors when running Python or pip, install the pip-system-certs package to make sure Python uses your system’s trusted certificates:
 
@@ -225,9 +227,10 @@ For applications built with PyInstaller, add this line at the very top of your m
 import pip_system_certs.wrapt_requests
 ```
 
+---
+
 ## Contact
 
 This project is maintained by staff at the California Air Resources Board (CARB).
 
 For questions, please contact [leoal2 on GitHub](https://github.com/leoal2).
-
