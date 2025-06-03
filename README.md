@@ -22,14 +22,14 @@ The model estimates total demand and greenhouse gas (GHG) emissions for:
 
 ```
 
-USEEIO\_CARB\_Runner/
-├── run\_model.py                    # Main execution script
+USEEIO_CARB_Runner/
+├── run_model.py                    # Main execution script
 ├── USEEIO.py                       # Python interface to useeior
 ├── environment.yml                 # Conda environment file
-├── build\_all\_stateio\_years.R       # R script to generate stateior output data
+├── build_all_stateio_years.R       # R script to generate stateior output data
 └── modelspecs/
-├── bea\_model\_us\_detailed\_2017.yml
-└── bea\_model\_ca\_summary\_2022.yml
+├── bea_model_us_detailed_2017.yml
+└── bea_model_ca_summary_2022.yml
 
 ````
 
@@ -48,7 +48,7 @@ Before starting anything, follow this order:
 3. **Install required R packages (`useeior`, `stateior`)**  
    In R (after installing R + Rtools), run:
 
-   ```r
+```r
    install.packages("devtools", type = "win.binary")
    devtools::install_github("USEEPA/useeior")
    devtools::install_github("USEEPA/stateior")
@@ -58,11 +58,11 @@ Before starting anything, follow this order:
     [https://docs.conda.io/en/latest/miniconda.html](https://docs.conda.io/en/latest/miniconda.html)
 
 5. **Make sure `git` is available inside Conda**
-   After activating Conda, run:
+After activating Conda, run:
 
-   ```bash
+```bash
    conda install git
-   ```
+```
 
 ---
 
