@@ -232,12 +232,6 @@ If you encounter SSL/TLS certificate errors when running Python or pip, install 
 pip install pip-system-certs
 ```
 
-For applications built with PyInstaller, add this line at the very top of your main Python script (before importing requests or anything using it):
-
-```python
-import pip_system_certs.wrapt_requests
-```
-
 ---
 
 ## Contact
