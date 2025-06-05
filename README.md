@@ -50,8 +50,8 @@ Before starting anything, follow this order:
 
 ```r
    install.packages("devtools", type = "win.binary")
-   devtools::install_github("USEEPA/useeior")
-   devtools::install_github("USEEPA/stateior")
+   devtools::install_github("USEPA/useeior")
+   devtools::install_github("USEPA/stateior")
 ````
 
 4. **Install Miniconda or Anaconda**
