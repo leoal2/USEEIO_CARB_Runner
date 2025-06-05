@@ -41,23 +41,48 @@ Before starting anything, follow this order:
    Download directly from CRAN (do NOT install R via Conda):  
     [https://cran.r-project.org/bin/windows/base/](https://cran.r-project.org/bin/windows/base/)
 
-2. **Install Rtools**  
+We strongly recommend using **R version 4.4.3**. Newer versions such as **R 4.5.0** are not fully supported by CRAN yet, and many R packages may fail to install due to unavailable Windows binaries or SSL issues.
+
+If you already installed R 4.5.0 and encounter repeated installation failures or package removal messages, please uninstall it and install R 4.4.3 from the link above.
+
+To avoid SSL or firewall-related issues when installing R packages, we also recommend:
+
+- Installing **RStudio Desktop** (a free IDE for R):  
+   https://posit.co/download/rstudio-desktop/
+  
+- Launching **RStudio**, then:
+   - Go to `Tools` → `Global Options` → `Packages`
+   - Uncheck the box: **"Use secure download method for HTTP"**
+   - Click "Apply"
+
+This will disable strict SSL checks, resolving common HTTPS/CRAN certificate errors.
+
+
+3. **Install Rtools**  
    You’ll need Rtools to compile some packages.  
     [https://cran.r-project.org/bin/windows/Rtools/](https://cran.r-project.org/bin/windows/Rtools/)
 
-3. **Install required R packages (`useeior`, `stateior`)**  
-   In R (after installing R + Rtools), run:
+4. **Install required R packages (`useeior`, `stateior`)**  
+   In R or RStudio (after installing + Rtools), run:
 
 ```r
    install.packages("devtools", type = "win.binary")
    devtools::install_github("USEPA/useeior")
    devtools::install_github("USEPA/stateior")
-````
+```
 
-4. **Install Miniconda or Anaconda**
+To confirm that the `useeior` and `stateior` R packages installed correctly, open RStudio (or your installed version of R) and run:
+
+```r
+require(useeior)
+require(stateior)
+```
+Both should return TRUE.  If not, revisit the installation steps above.
+
+5. **Install Miniconda or Anaconda**
     [https://docs.conda.io/en/latest/miniconda.html](https://docs.conda.io/en/latest/miniconda.html)
 
-5. **Make sure `git` is available inside Conda**
+6. **Make sure `git` is available inside Conda**
 After activating Conda, run:
 
 ```bash
