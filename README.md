@@ -142,7 +142,18 @@ lciafmt/ipcc/IPCC_<version>.parquet
 lciafmt/traci/TRACI_<version>.parquet
 ```
 
-These are referenced in the `Indicators:` section of the YAML model files.
+
+To check that they exist, copy and paste this into Python:
+
+```python
+import os
+
+ipcc_path = os.path.expandvars(r"%LocalAppData%/lciafmt/ipcc/IPCC_2023_100.parquet")
+traci_path = os.path.expandvars(r"%LocalAppData%/lciafmt/traci/TRACI_2.1.parquet")
+
+print("IPCC present:", os.path.exists(ipcc_path))
+print("TRACI present:", os.path.exists(traci_path))
+```
 
 ### 4. (Optional) Generate `stateior` outputs locally if S3 access fails
 
