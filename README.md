@@ -133,29 +133,7 @@ flowsa/FlowBySector/GHGc_state_CA_2022_<version>.parquet
 
 This file is required by the model YAML specifications in `useeior`.
 
-### 3. Ensure LCIAformatter `.parquet` files exist
-
-Make sure these files are present:
-
-```
-lciafmt/ipcc/IPCC_<version>.parquet
-lciafmt/traci/TRACI_<version>.parquet
-```
-
-
-To check that they exist, copy and paste this into Python:
-
-```python
-import os
-
-ipcc_path = os.path.expandvars(r"%LocalAppData%/lciafmt/ipcc/IPCC_2023_100.parquet")
-traci_path = os.path.expandvars(r"%LocalAppData%/lciafmt/traci/TRACI_2.1.parquet")
-
-print("IPCC present:", os.path.exists(ipcc_path))
-print("TRACI present:", os.path.exists(traci_path))
-```
-
-### 4. (Optional) Generate `stateior` outputs locally if S3 access fails
+### 3. (Optional) Generate `stateior` outputs locally if S3 access fails
 
 Pre-generated `.rds` files are included in the repository under `stateio_data/`.
 When you run the Python scripts, they will automatically check if the required `.rds` files are present in your `%LocalAppData%\stateio` directory.
