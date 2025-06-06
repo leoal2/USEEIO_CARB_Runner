@@ -210,12 +210,6 @@ If you encounter SSL/TLS certificate errors when running Python or pip, install:
 pip install pip-system-certs
 ```
 
-Then at the top of your Python script:
-
-```python
-import pip_system_certs.wrapt_requests
-```
-
 ---
 
 ## Troubleshooting
