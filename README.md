@@ -8,86 +8,90 @@ This repository provides a California-customized implementation of the U.S. EPA'
 
 This project integrates:
 
-- Official EPA models: `useeior`, `stateior`, `LCIAformatter`
-- CARB-specific flow modifications using `flowsa_CARB_version`
-- A custom Python script (`run_model.py`) for computing California-specific emissions and demand matrices at the detailed NAICS level
+* Official EPA models: `useeior`, `stateior`, `LCIAformatter`
+* CARB-specific flow modifications using `flowsa_CARB_version`
+* A custom Python script (`run_model.py`) for computing California-specific emissions and demand matrices at the detailed NAICS level
 
 The model estimates total demand and greenhouse gas (GHG) emissions for:
 
-- The United States (detailed level)
-- California (summary and detailed levels)
-- Rest of the U.S. (RoUS)
+* The United States (detailed level)
+* California (summary and detailed levels)
+* Rest of the U.S. (RoUS)
 
 ## Repository Structure
 
 ```
-
 USEEIO_CARB_Runner/
 ├── run_model.py                    # Main execution script
 ├── USEEIO.py                       # Python interface to useeior
 ├── environment.yml                 # Conda environment file
-├── build_all_stateio_years.R       # R script to generate stateior output data
+├── build_all_stateio_years.R      # R script to generate stateior output data
 └── modelspecs/
-├── bea_model_us_detailed_2017.yml
-└── bea_model_ca_summary_2022.yml
-
-````
+    ├── bea_model_us_detailed_2017.yml
+    └── bea_model_ca_summary_2022.yml
+```
 
 ## Prerequisites (IMPORTANT ORDER)
 
 Before starting anything, follow this order:
 
-1. **Install R 4.4.3**  
-   Download directly from CRAN (do NOT install R via Conda):  
-    [https://cran.r-project.org/bin/windows/base/](https://cran.r-project.org/bin/windows/base/)
+1. **Install R 4.4.3**
+   Download directly from CRAN (do NOT install R via Conda):
+   [https://cran.r-project.org/bin/windows/base/](https://cran.r-project.org/bin/windows/base/)
 
-We strongly recommend using **R version 4.4.3**. Newer versions such as **R 4.5.0** are not fully supported by CRAN yet, and many R packages may fail to install due to unavailable Windows binaries or SSL issues.
+   R 4.4.3 is recommended for full compatibility. R 4.5.0 may also work if you install R packages using RStudio, but could cause issues in `stateior` or `useeior` due to changes in data frame structure.
 
-If you already installed R 4.5.0 and encounter repeated installation failures or package removal messages, please uninstall it and install R 4.4.3 from the link above.
+2. **Install RStudio Desktop** (free IDE for R):
+   [https://posit.co/download/rstudio-desktop/](https://posit.co/download/rstudio-desktop/)
 
-To avoid SSL or firewall-related issues when installing R packages, we also recommend:
+   Then:
 
-- Installing **RStudio Desktop** (a free IDE for R):  
-   https://posit.co/download/rstudio-desktop/
-  
-- Launching **RStudio**, then:
-   - Go to `Tools` → `Global Options` → `Packages`
-   - Uncheck the box: **"Use secure download method for HTTP"**
-   - Click "Apply"
+   * Launch RStudio
+   * Go to `Tools` → `Global Options` → `Packages`
+   * Uncheck the box: **"Use secure download method for HTTP"**
+   * Click "Apply"
 
-This will disable strict SSL checks, resolving common HTTPS/CRAN certificate errors.
+3. **Install USEEIO and STATEIOR packages using RStudio**
 
+   In RStudio Console:
 
-3. **Install Rtools**  
-   You’ll need Rtools to compile some packages.  
-    [https://cran.r-project.org/bin/windows/Rtools/](https://cran.r-project.org/bin/windows/Rtools/)
-
-4. **Install required R packages (`useeior`, `stateior`)**  
-   In R or RStudio (after installing + Rtools), run:
-
-```r
-   install.packages("devtools", type = "win.binary")
+   ```r
+   install.packages("devtools")
    devtools::install_github("USEPA/useeior")
    devtools::install_github("USEPA/stateior")
-```
+   ```
 
-To confirm that the `useeior` and `stateior` R packages installed correctly, open RStudio (or your installed version of R) and run:
+   To confirm successful installation, run:
 
-```r
-require(useeior)
-require(stateior)
-```
-Both should return TRUE.  If not, revisit the installation steps above.
+   ```r
+   require(useeior)
+   require(stateior)
+   ```
 
-5. **Install Miniconda or Anaconda**
-    [https://docs.conda.io/en/latest/miniconda.html](https://docs.conda.io/en/latest/miniconda.html)
+   Both should return TRUE. If not, revisit the installation steps above.
 
-6. **Make sure `git` is available inside Conda**
-After activating Conda, run:
+4. **Open Anaconda Prompt**
 
-```bash
+5. **Create the Conda environment**
+
+   If you previously created the `buildings` environment, remove it first:
+
+   ```bash
+   conda remove -n buildings --all
+   ```
+
+   Then:
+
+   ```bash
+   conda env create -f environment.yml
+   conda activate buildings
+   ```
+
+6. **Ensure `git` is available inside Conda**
+
+   ```bash
    conda install git
-```
+   ```
 
 ---
 
@@ -100,24 +104,15 @@ git clone https://github.com/leoal2/USEEIO_CARB_Runner.git
 cd USEEIO_CARB_Runner
 ```
 
-2. **Create and activate the conda environment**
+2. **(If needed) Set R environment variables (Windows users only)**
+
+Only if `rpy2` cannot find your R installation, manually set:
 
 ```bash
-conda env create -f environment.yml
-conda activate buildings
-```
-
-3. **(If needed) Set R environment variables (Windows users only)**
-
-If you installed R before Conda, the `R_HOME` path is often automatically available and may not need to be reset. However, if you encounter Python/R interop issues, you can manually set:
-
-```bash
-set R_HOME=%LocalAppData%\Programs\R\R-4.4.3
+set R_HOME=C:\Program Files\R\R-4.4.3
 set R_USER=%UserProfile%\Documents
-set R_LIBS_USER=%LocalAppData%\Programs\R\R-4.4.3\library
+set R_LIBS_USER=C:\Program Files\R\R-4.4.3\library
 ```
-
-These ensure that Python and `rpy2` correctly locate your R installation.
 
 ---
 
@@ -131,7 +126,7 @@ Copy your model spec files into the following R folder:
 copy modelspecs\*.* %R_HOME%\library\useeior\extdata\modelspecs
 ```
 
-Example of required files:
+Required files:
 
 * `bea_model_us_detailed_2017.yml`
 * `bea_model_ca_summary_2022.yml`
@@ -157,24 +152,6 @@ flowsa/FlowBySector/GHGc_state_CA_2022_<version>.parquet
 ```
 
 This file is required by the model YAML specifications in `useeior`.
-
-### 3. (Optional) Generate `stateior` outputs locally if S3 access fails
-
-Pre-generated `.rds` files are included in the repository under `stateio_data/`.
-When you run the Python scripts, they will automatically check if the required `.rds` files are present in your `%LocalAppData%\stateio` directory.
-If any are missing, the scripts will copy them over automatically.
-
-If automatic downloading of `.rds` files fails, you can generate them yourself by running the provided R script:
-
-```r
-source(paste0(Sys.getenv("USERPROFILE"), "/USEEIO_CARB_Runner/build_all_stateio_years.R"))
-```
-
-This will create the necessary `State_Summary_...` and `TwoRegion_Summary_...` `.rds` files in:
-
-```
-output_dir <- paste0(Sys.getenv("USERPROFILE"), "/AppData/Local/stateio")
-```
 
 ---
 
@@ -219,20 +196,53 @@ Each file contains:
 * You may need Microsoft Visual C++ Redistributables for Python/R interop via `rpy2`.
 
 **Why this installation order?**
-Installing R + Rtools before Conda ensures that the correct system paths (like `R_HOME`) are set and persist when Conda activates its environments.
-This avoids common issues with missing compilers or misaligned paths when using `rpy2` or other Python-R bridges.
+Installing R and Rtools before Conda ensures that the correct system paths (like `R_HOME`) are set and persist when Conda activates its environments. This avoids common issues with misaligned paths when using `rpy2`.
 
 ---
 
 ## Important Notes on Runtime & SSL Setup
 
-Some steps, like running FLOWSA or manually generating stateior .rds files, can take a significant amount of time (sometimes several minutes).
-This is normal — please be patient and do not assume the script has errored just because it appears inactive.
+Some steps, like running FLOWSA or manually generating `stateior` .rds files, can take a significant amount of time. Please be patient and do not assume the script has failed if it appears inactive.
 
-If you encounter SSL/TLS certificate errors when running Python or pip, install the pip-system-certs package to make sure Python uses your system’s trusted certificates:
+If you encounter SSL/TLS certificate errors when running Python or pip, install:
 
 ```bash
 pip install pip-system-certs
+```
+
+Then at the top of your Python script:
+
+```python
+import pip_system_certs.wrapt_requests
+```
+
+---
+
+## Troubleshooting
+
+### R\_HOME not found
+
+If `rpy2` fails to locate your R installation, manually set:
+
+```bash
+set R_HOME=C:\Program Files\R\R-4.4.3
+```
+
+---
+
+### Generating `stateior` outputs locally if S3 access fails
+
+If the model cannot download `.rds` files automatically, you can generate them manually:
+
+```r
+source(paste0(Sys.getenv("USERPROFILE"), "/USEEIO_CARB_Runner/build_all_stateio_years.R"))
+```
+
+Creates:
+
+```
+%LocalAppData%\stateio\TwoRegion_Summary_... .rds
+%LocalAppData%\stateio\State_Summary_... .rds
 ```
 
 ---
