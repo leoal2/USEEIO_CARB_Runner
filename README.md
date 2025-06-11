@@ -102,13 +102,13 @@ Before starting anything, follow this order:
 
 8. **(If needed) Set R environment variables (Windows users only)**
 
-Only if `rpy2` cannot find your R installation, manually set:
-
-```bash
-set R_HOME=C:\Program Files\R\R-4.4.3
-set R_USER=%UserProfile%\Documents
-set R_LIBS_USER=C:\Program Files\R\R-4.4.3\library
-```
+    Only if `rpy2` cannot find your R installation, manually set:
+    
+    ```bash
+    set R_HOME=C:\Program Files\R\R-4.4.3
+    set R_USER=%UserProfile%\Documents
+    set R_LIBS_USER=C:\Program Files\R\R-4.4.3\library
+    ```
 
 ---
 
