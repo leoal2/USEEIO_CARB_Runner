@@ -45,7 +45,7 @@ Before starting anything, follow this order:
    Rtools is required to compile R packages like `useeior` and `stateior` when using `devtools`.
 
    Download the version that matches R 4.4.3:  
-   [https://cran.r-project.org/bin/windows/Rtools/rtools44.html](https://cran.r-project.org/bin/windows/Rtools/rtools44.html)
+   [https://cran.rstudio.com/bin/windows/Rtools/rtools44/rtools.html]
 
    After installation, restart RStudio to ensure the toolchain is detected.
 
