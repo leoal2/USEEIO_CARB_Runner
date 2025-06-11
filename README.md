@@ -41,7 +41,15 @@ Before starting anything, follow this order:
 
    R 4.4.3 is recommended for full compatibility. R 4.5.0 may also work if you install R packages using RStudio, but could cause issues in `stateior` or `useeior` due to changes in data frame structure.
 
-2. **Install RStudio Desktop** (free IDE for R):
+2. **Install Rtools 4.4**  
+   Rtools is required to compile R packages like `useeior` and `stateior` when using `devtools`.
+
+   Download the version that matches R 4.4.3:  
+   [https://cran.r-project.org/bin/windows/Rtools/rtools44.html](https://cran.r-project.org/bin/windows/Rtools/rtools44.html)
+
+   After installation, restart RStudio to ensure the toolchain is detected.
+
+3. **Install RStudio Desktop** (free IDE for R):
    [https://posit.co/download/rstudio-desktop/](https://posit.co/download/rstudio-desktop/)
 
    Then:
@@ -51,7 +59,7 @@ Before starting anything, follow this order:
    * Uncheck the box: **"Use secure download method for HTTP"**
    * Click "Apply"
 
-3. **Install USEEIO and STATEIOR packages using RStudio**
+4. **Install USEEIO and STATEIOR packages using RStudio**
 
    In RStudio Console:
 
@@ -70,22 +78,22 @@ Before starting anything, follow this order:
 
    Both should return TRUE. If not, revisit the installation steps above.
 
-4. **Open Anaconda Prompt**
+5. **Open Anaconda Prompt**
 
-5. **Ensure `git` is available inside Conda**
+6. **Ensure `git` is available inside Conda**
 
    ```bash
    conda install git
    ```
 
-6. **Clone the repository**
+7. **Clone the repository**
 
    ```bash
    git clone https://github.com/leoal2/USEEIO_CARB_Runner.git
    cd USEEIO_CARB_Runner
    ```
    
-7. **Create the Conda environment**
+8. **Create the Conda environment**
 
    If you previously created the `buildings` environment, remove it first:
 
@@ -100,7 +108,7 @@ Before starting anything, follow this order:
    conda activate buildings
    ```
 
-8. **(If needed) Set R environment variables (Windows users only)**
+9. **(If needed) Set R environment variables (Windows users only)**
 
     Only if `rpy2` cannot find your R installation, manually set:
     
