@@ -72,7 +72,20 @@ Before starting anything, follow this order:
 
 4. **Open Anaconda Prompt**
 
-5. **Create the Conda environment**
+5. **Ensure `git` is available inside Conda**
+
+   ```bash
+   conda install git
+   ```
+
+6. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/leoal2/USEEIO_CARB_Runner.git
+   cd USEEIO_CARB_Runner
+   ```
+   
+7. **Create the Conda environment**
 
    If you previously created the `buildings` environment, remove it first:
 
@@ -87,24 +100,7 @@ Before starting anything, follow this order:
    conda activate buildings
    ```
 
-6. **Ensure `git` is available inside Conda**
-
-   ```bash
-   conda install git
-   ```
-
----
-
-## Installation
-
-1. **Clone this repository**
-
-```bash
-git clone https://github.com/leoal2/USEEIO_CARB_Runner.git
-cd USEEIO_CARB_Runner
-```
-
-2. **(If needed) Set R environment variables (Windows users only)**
+8. **(If needed) Set R environment variables (Windows users only)**
 
 Only if `rpy2` cannot find your R installation, manually set:
 
