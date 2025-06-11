@@ -30,7 +30,9 @@ import numpy as np
 import rpy2.robjects as ro
 from rpy2.robjects.packages import importr
 
-ro.r(f'Sys.setenv(STATEIOR_DATADIR = "{stateio_dir.replace(os.sep, '/')}")')
+#ro.r(f'Sys.setenv(STATEIOR_DATADIR = "{stateio_dir.replace(os.sep, '/')}")')
+ro.r(f"Sys.setenv(STATEIOR_DATADIR = '{stateio_dir.replace(os.sep, '/')}')")
+
 
 # Load USEEIO in R
 useeior = importr("useeior")
