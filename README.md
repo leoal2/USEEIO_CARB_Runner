@@ -82,11 +82,23 @@ Before starting anything, follow this order:
 
 6. **Ensure `git` is available inside Conda**
 
+If using the zipped version of `flowsa_CARB_version`, you do NOT need `git` installed.
+
+If using GitHub to clone the repository (instead of ZIP), install:
+
    ```bash
    conda install git
    ```
 
-7. **Clone the repository**
+7. **Clone the repository (or extract the provided ZIP archive)**
+
+If using the zipped version, unzip the `USEEIO_CARB_Runner.zip` file into a folder, and navigate into it:
+
+   ```bash
+   git clone https://github.com/leoal2/USEEIO_CARB_Runner.git
+   cd path\to\unzipped\USEEIO_CARB_Runner
+   ```
+If using GitHub, type the following:
 
    ```bash
    git clone https://github.com/leoal2/USEEIO_CARB_Runner.git
@@ -136,6 +148,12 @@ Required files:
 * `bea_model_ca_summary_2022.yml`
 
 ### 2. Generate CA-specific emissions files using FLOWSA
+
+If using the ZIP version of `flowsa_CARB_version`, make sure it's installed with pip:
+
+```bash
+pip install path\to\flowsa_CARB_version-main.zip
+```
 
 Run the following in Python:
 
