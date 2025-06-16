@@ -95,7 +95,6 @@ If using GitHub to clone the repository (instead of ZIP), install:
 If using the zipped version, unzip the `USEEIO_CARB_Runner.zip` file into a folder, and navigate into it:
 
    ```bash
-   git clone https://github.com/leoal2/USEEIO_CARB_Runner.git
    cd path\to\unzipped\USEEIO_CARB_Runner
    ```
 If using GitHub, type the following:
