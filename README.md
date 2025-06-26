@@ -266,4 +266,4 @@ Creates:
 
 This project is maintained by staff at the California Air Resources Board (CARB).
 
-For questions, please contact [leoal2 on GitHub](https://github.com/leoal2).
+For questions, please contact embodiedcarbon@arb.ca.gov.
